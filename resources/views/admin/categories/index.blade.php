@@ -35,7 +35,7 @@
                             <tbody>
                                 @forelse ($categories as $index => $category)
                                 <tr class="bg-white border-b hover:bg-gray-50">
-                                    <td class="px-6 py-4">{{ $index + 1 }}</td>
+                                    <td class="px-6 py-4">{{ $categories->firstItem() + $index }}</td>
                                     <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{{ $category->name }}</td>
                                     <td class="px-6 py-4">{{ $category->slug }}</td>
                                     <td class="px-6 py-4">

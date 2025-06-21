@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Models\Category;
 
 class PublicController extends Controller
 {
@@ -34,5 +35,21 @@ class PublicController extends Controller
         $post->load('comments.user');
 
         return view('posts.show', compact('post'));
+    }
+
+    /**
+     * Menampilkan postingan berdasarkan kategori yang dipilih.
+     */
+    public function showByCategory(Category $category)
+    {
+        // Ambil semua post yang statusnya 'published' DARI KATEGORI INI,
+        // urutkan dari yang terbaru, dan paginasi.
+        $posts = $category->posts()
+                          ->where('status', 'published')
+                          ->latest()
+                          ->paginate(5); // Angka 5 bisa Anda sesuaikan
+
+        // Kirim data posts dan data kategori itu sendiri ke sebuah view baru
+        return view('categories.show', compact('posts', 'category'));
     }
 }

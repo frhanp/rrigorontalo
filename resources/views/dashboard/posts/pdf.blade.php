@@ -23,4 +23,4 @@
         {!! nl2br(e($post->content)) !!}
     </div>
 </body>
-</html>php
+</html>

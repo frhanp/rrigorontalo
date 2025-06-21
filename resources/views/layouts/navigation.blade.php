@@ -15,10 +15,37 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    <!-- Menu untuk Admin dan Editor -->
+                    <x-nav-link :href="route('dashboard.posts.index')" :active="request()->routeIs('dashboard.posts.*')">
+                        {{ __('Kelola Berita') }}
+                    </x-nav-link>
+                    
+                    <x-nav-link :href="route('dashboard.comments.index')" :active="request()->routeIs('dashboard.comments.*')">
+                        {{ __('Kelola Komentar') }}
+                    </x-nav-link>
+                    
+                    <x-nav-link :href="route('dashboard.media.index')" :active="request()->routeIs('dashboard.media.*')">
+                        {{ __('Kelola Media') }}
+                    </x-nav-link>
+                    
+                    <x-nav-link :href="route('dashboard.pdf.index')" :active="request()->routeIs('dashboard.pdf.*')">
+                        {{ __('Kelola PDF') }}
+                    </x-nav-link>
+
+                    <!-- Menu Khusus Admin -->
+                    @if (Auth::user()->role === 'admin')
+                        <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
+                            {{ __('Kelola Kategori') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
+                            {{ __('Kelola User') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
-            <!-- Settings Dropdown -->
+            <!-- Settings Dropdown (BAGIAN YANG DIKEMBALIKAN) -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
@@ -52,7 +79,7 @@
                 </x-dropdown>
             </div>
 
-            <!-- Hamburger -->
+            <!-- Hamburger (BAGIAN YANG DIKEMBALIKAN) -->
             <div class="-me-2 flex items-center sm:hidden">
                 <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -70,9 +97,34 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            
+            <x-responsive-nav-link :href="route('dashboard.posts.index')" :active="request()->routeIs('dashboard.posts.*')">
+                {{ __('Kelola Berita') }}
+            </x-responsive-nav-link>
+            
+            <x-responsive-nav-link :href="route('dashboard.comments.index')" :active="request()->routeIs('dashboard.comments.*')">
+                {{ __('Kelola Komentar') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('dashboard.media.index')" :active="request()->routeIs('dashboard.media.*')">
+                {{ __('Kelola Media') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('dashboard.pdf.index')" :active="request()->routeIs('dashboard.pdf.*')">
+                {{ __('Kelola PDF') }}
+            </x-responsive-nav-link>
+
+            <!-- Menu Khusus Admin -->
+            @if (Auth::user()->role === 'admin')
+                <x-responsive-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
+                    {{ __('Kelola Kategori') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
+                    {{ __('Kelola User') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
-        <!-- Responsive Settings Options -->
+        <!-- Responsive Settings Options (BAGIAN YANG DIKEMBALIKAN) -->
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="px-4">
                 <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>

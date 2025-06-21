@@ -15,7 +15,15 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => RoleMiddleware::class,
         ]);
+
     })
+    
+
+    ->withProviders([
+        App\Providers\ViewServiceProvider::class, // <-- TAMBAHKAN BARIS INI
+    ]) // <-- TAMBAHKAN SELURUH BLOK INI
+
+    
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();

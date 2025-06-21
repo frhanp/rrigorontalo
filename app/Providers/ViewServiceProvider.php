@@ -21,8 +21,10 @@ class ViewServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Menyediakan data ke layout publik setiap kali dirender
-        View::composer('layouts.public', function ($view) {
+        // UBAH BARIS DI BAWAH INI
+        // DARI: 'layouts.public'
+        // MENJADI: 'components.layouts.public'
+        View::composer('components.layouts.public', function ($view) {
             $view->with('nav_categories', Category::orderBy('name', 'asc')->get());
         });
     }

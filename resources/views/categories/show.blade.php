@@ -1,14 +1,17 @@
 <x-layouts.public>
     <x-slot name="title">
-        Beranda - RRI Gorontalo
+        Kategori: {{ $category->name }}
     </x-slot>
 
     <div class="max-w-4xl mx-auto">
-        <h2 class="text-3xl font-bold mb-8 text-slate-900 pb-2 border-b-4 border-blue-600 inline-block">Berita Terbaru</h2>
+        {{-- Judul halaman yang dinamis sesuai nama kategori --}}
+        <h2 class="text-3xl font-bold mb-8 text-slate-900 pb-2 border-b-4 border-blue-600 inline-block">
+            Kategori: {{ $category->name }}
+        </h2>
         
         <div class="space-y-10">
+            {{-- Menggunakan gaya kartu berita yang sama persis dengan homepage untuk konsistensi --}}
             @forelse($posts as $post)
-                {{-- KARTU BERITA DENGAN HOVER EFFECT BARU --}}
                 <article class="group bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
                     @if($post->media && $post->media_type == 'image')
                         <div class="overflow-hidden">
@@ -43,7 +46,7 @@
                 </article>
             @empty
                 <div class="bg-white p-10 rounded-lg shadow-sm border border-slate-200">
-                    <p class="text-center text-slate-500">Belum ada berita yang dipublikasikan.</p>
+                    <p class="text-center text-slate-500">Belum ada berita yang ditemukan dalam kategori ini.</p>
                 </div>
             @endforelse
         </div>

@@ -15,18 +15,13 @@ class PostController extends Controller
 {/**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $query = Post::with('category', 'user');
+        public function index()
+        {
+            $query = Post::with('category', 'user');
 
-        // Jika user bukan admin, hanya tampilkan post miliknya
-        if (Auth::user()->role !== 'admin') {
-            $query->where('user_id', Auth::id());
+            $posts = $query->latest()->paginate(10);
+            return view('dashboard.posts.index', compact('posts'));
         }
-
-        $posts = $query->latest()->paginate(10);
-        return view('dashboard.posts.index', compact('posts'));
-    }
 
     /**
      * Show the form for creating a new resource.
@@ -90,8 +85,13 @@ class PostController extends Controller
         }
 
         $categories = Category::orderBy('name')->get();
+
+        // TAMBAHKAN BARIS INI untuk mengambil data komentar terkait
+        $post->load('comments.user');
+
         return view('dashboard.posts.edit', compact('post', 'categories'));
     }
+
 
     /**
      * Update the specified resource in storage.

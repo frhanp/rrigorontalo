@@ -9,20 +9,29 @@
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=inter:400,500,600&display=swap" rel="stylesheet" />
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
-            </div>
+    <body class="font-sans text-slate-900 antialiased">
+        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-slate-100">
+            
+            <div class="w-full sm:max-w-md my-6 px-8 py-10 bg-white shadow-xl overflow-hidden sm:rounded-2xl">
+                {{-- Logo dan Judul Aplikasi --}}
+                <div class="flex flex-col items-center mb-8">
+                     <a href="/" class="transition-transform duration-300 hover:scale-105">
+                        <div class="flex items-center space-x-3">
+                            <img src="{{ asset('images/rrilogo.svg') }}" alt="Logo RRI Gorontalo" class="w-16 h-auto">
+                            <div>
+                                <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">PORTAL BERITA</h1>
+                                <p class="text-xs font-semibold text-blue-600 -mt-1">INTERN RRI GORONTALO</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
+                {{-- Slot untuk konten form (login, register, dll.) --}}
                 {{ $slot }}
             </div>
         </div>

@@ -1,93 +1,83 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $post->title }}</title>
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
-    <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="antialiased bg-gray-100">
-    <div class="container mx-auto px-4 py-8">
-        <header class="flex justify-between items-center border-b pb-4 mb-8">
-            <h1 class="text-2xl font-bold text-gray-800">
-                <a href="{{ route('home') }}">Portal Berita</a>
-            </h1>
-            <nav>
-                @auth
-                    <a href="{{ url('/dashboard') }}" class="font-semibold text-gray-600 hover:text-gray-900">Dashboard</a>
-                @else
-                    <a href="{{ route('login') }}" class="font-semibold text-gray-600 hover:text-gray-900">Log in</a>
-                @endauth
-            </nav>
-        </header>
+<x-layouts.public>
+    <x-slot name="title">
+        {{ $post->title }}
+    </x-slot>
 
-        <main>
-            <article class="bg-white p-8 rounded-lg shadow-md">
-                <h1 class="text-4xl font-extrabold text-gray-900 mb-3">{{ $post->title }}</h1>
-                <div class="text-base text-gray-500 mb-6">
-                    Ditulis oleh {{ $post->user->name }} di kategori <a href="#" class="font-semibold text-blue-500">{{ $post->category->name }}</a>
-                    <span class="mx-2">&bull;</span>
-                    {{ $post->created_at->format('d F Y') }}
-                </div>
+    <div class="max-w-4xl mx-auto">
+        <article class="bg-white p-6 sm:p-10 rounded-xl shadow-xl border border-slate-200">
+            {{-- Badge Kategori --}}
+            <a href="{{ route('categories.show', $post->category) }}" class="inline-block bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-4 hover:bg-blue-200 transition-colors">
+                {{ $post->category->name }}
+            </a>
+            {{-- Judul dan Meta Info --}}
+            <h1 class="text-3xl sm:text-5xl font-extrabold text-slate-900 mb-4 leading-tight">{{ $post->title }}</h1>
+            <div class="text-base text-slate-500 mb-6 border-b border-slate-200 pb-6">
+                Oleh <span class="font-semibold text-slate-800">{{ $post->user->name }}</span>
+                <span class="mx-2">&bull;</span>
+                <span>Diterbitkan pada {{ $post->created_at->format('d F Y, H:i') }}</span>
+            </div>
 
-                @if($post->media && $post->media_type == 'image')
-                    <img src="{{ asset('storage/' . $post->media) }}" alt="{{ $post->title }}" class="rounded-lg w-full object-cover mb-6">
-                @elseif($post->media && $post->media_type == 'video')
-                    <video controls class="w-full rounded-lg mb-6">
-                        <source src="{{ asset('storage/' . $post->media) }}" type="video/mp4">
-                        Browser Anda tidak mendukung tag video.
-                    </video>
-                @endif
-                
-                <div class="prose max-w-none text-gray-700 leading-relaxed">
-                    {!! nl2br(e($post->content)) !!}
-                </div>
-            </article>
+            {{-- Media Utama --}}
+            @if($post->media && $post->media_type == 'image')
+                <img src="{{ asset('storage/' . $post->media) }}" alt="{{ $post->title }}" class="rounded-lg w-full object-cover mb-8">
+            @elseif($post->media && $post->media_type == 'video')
+                <video controls class="w-full rounded-lg mb-8">
+                    <source src="{{ asset('storage/' . $post->media) }}" type="video/mp4">
+                    Browser Anda tidak mendukung tag video.
+                </video>
+                {{-- INI BLOK BARU UNTUK AUDIO --}}
+        @elseif($post->media && $post->media_type == 'audio')
+        <div class="mb-8">
+            <p class="text-sm font-semibold text-slate-600 mb-2">Dengarkan Audio:</p>
+            <audio controls class="w-full">
+                <source src="{{ asset('storage/' . $post->media) }}" type="audio/mpeg">
+                Browser Anda tidak mendukung elemen audio.
+            </audio>
+        </div>  
+            @endif
+            
+            {{-- Konten Utama dengan Tipografi yang nyaman dibaca --}}
+            <div class="prose prose-lg max-w-none text-slate-800 leading-relaxed prose-a:text-blue-600 hover:prose-a:text-blue-800">
+                {!! nl2br(e($post->content)) !!}
+            </div>
+        </article>
 
-            <!-- Bagian Komentar -->
-            <section id="comments" class="bg-white p-8 rounded-lg shadow-md mt-8">
-                <h2 class="text-2xl font-bold mb-6">Komentar ({{ $post->comments->count() }})</h2>
+        {{-- Bagian Komentar --}}
+        <section id="comments" class="bg-white p-6 sm:p-10 rounded-xl shadow-xl border border-slate-200 mt-10">
+            <h2 class="text-2xl font-bold mb-6 text-slate-900">Komentar ({{ $post->comments->count() }})</h2>
 
-                @auth
-                    <form action="{{ route('comments.store') }}" method="POST" class="mb-6">
-                        @csrf
-                        <input type="hidden" name="post_id" value="{{ $post->id }}">
+            @auth
+                <form action="{{ route('comments.store') }}" method="POST" class="mb-8">
+                    @csrf
+                    <input type="hidden" name="post_id" value="{{ $post->id }}">
+                    <div>
+                        <textarea name="content" rows="4" class="w-full bg-slate-100 border-slate-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm" placeholder="Tulis komentar Anda sebagai {{ Auth::user()->name }}..." required>{{ old('content') }}</textarea>
+                    </div>
+                    <div class="mt-4">
+                        <x-primary-button>Kirim Komentar</x-primary-button>
+                    </div>
+                </form>
+            @else
+                <p class="mb-8 text-center text-slate-500"><a href="{{ route('login') }}" class="text-blue-600 hover:underline font-semibold">Login</a> untuk berkomentar.</p>
+            @endauth
+
+            <div class="space-y-6">
+                @forelse($post->comments->sortByDesc('created_at') as $comment)
+                    <div class="flex space-x-4 border-t border-slate-200 pt-6">
+                        <div class="flex-shrink-0">
+                            <div class="w-11 h-11 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-600 text-lg">
+                                {{ strtoupper(substr($comment->user->name, 0, 1)) }}
+                            </div>
+                        </div>
                         <div>
-                            <textarea name="content" rows="4" class="w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" placeholder="Tulis komentar Anda..." required></textarea>
+                            <p class="font-semibold text-slate-900">{{ $comment->user->name }} <span class="text-xs font-normal text-slate-500">- {{ $comment->created_at->diffForHumans() }}</span></p>
+                            <p class="mt-1 text-slate-700">{{ $comment->content }}</p>
                         </div>
-                        <div class="mt-2">
-                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">Kirim Komentar</button>
-                        </div>
-                    </form>
-                @else
-                    <p class="mb-6 text-center"><a href="{{ route('login') }}" class="text-blue-600 hover:underline">Login</a> atau <a href="{{ route('register') }}" class="text-blue-600 hover:underline">Register</a> untuk meninggalkan komentar.</p>
-                @endauth
-
-                <div class="space-y-6">
-                    @forelse($post->comments as $comment)
-                        <div class="flex space-x-4">
-                            <div class="flex-shrink-0">
-                                <!-- Placeholder for user avatar -->
-                                <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center font-bold text-gray-600">
-                                    {{ strtoupper(substr($comment->user->name, 0, 1)) }}
-                                </div>
-                            </div>
-                            <div>
-                                <div class="font-bold text-gray-800">{{ $comment->user->name }}</div>
-                                <div class="text-xs text-gray-500">{{ $comment->created_at->diffForHumans() }}</div>
-                                <p class="mt-2 text-gray-700">{{ $comment->content }}</p>
-                            </div>
-                        </div>
-                    @empty
-                        <p class="text-gray-500">Belum ada komentar.</p>
-                    @endforelse
-                </div>
-            </section>
-        </main>
+                    </div>
+                @empty
+                    <p class="text-slate-500 pt-6 border-t border-slate-200">Jadilah yang pertama berkomentar.</p>
+                @endforelse
+            </div>
+        </section>
     </div>
-</body>
-</html>
+</x-layouts.public>

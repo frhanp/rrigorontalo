@@ -12,7 +12,7 @@ class CategoryController extends Controller
     // Menampilkan semua kategori
     public function index()
     {
-        $categories = Category::latest()->get();
+        $categories = Category::latest()->paginate(10);
         return view('admin.categories.index', compact('categories'));
     }
 
