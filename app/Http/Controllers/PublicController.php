@@ -20,6 +20,14 @@ class PublicController extends Controller
                      
         return view('home', compact('posts'));
     }
+    public function archive()
+    {
+        $posts = Post::where('status', 'published')
+                     ->latest()
+                     ->paginate(15); // Tampilkan 15 berita per halaman
+
+        return view('archive', compact('posts'));
+    }
 
     /**
      * Menampilkan satu berita secara detail beserta komentarnya.

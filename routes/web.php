@@ -57,4 +57,6 @@ Route::get('/posts/{post:slug}', [PublicController::class, 'showPost'])->name('p
 // TAMBAHKAN ROUTE BARU DI BAWAH INI
 Route::get('/kategori/{category:slug}', [PublicController::class, 'showByCategory'])->name('categories.show');
 
+Route::get('/arsip', [PublicController::class, 'archive'])->name('posts.archive');
+
 require __DIR__ . '/auth.php';

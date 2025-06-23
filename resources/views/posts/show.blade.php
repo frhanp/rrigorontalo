@@ -16,30 +16,33 @@
                 <span class="mx-2">&bull;</span>
                 <span>Diterbitkan pada {{ $post->created_at->format('d F Y, H:i') }}</span>
             </div>
-
-            {{-- Media Utama --}}
+        
+            {{-- === AWAL PERUBAHAN URUTAN === --}}
+        
+            {{-- 1. KONTEN UTAMA DITAMPILKAN TERLEBIH DAHULU --}}
+            <div class="prose prose-lg max-w-none text-slate-800 leading-relaxed prose-a:text-blue-600 hover:prose-a:text-blue-800 mb-8">
+                {!! $post->content !!}
+            </div>
+        
+            {{-- 2. MEDIA (GAMBAR/VIDEO/AUDIO) DIPINDAHKAN KE BAGIAN AKHIR --}}
             @if($post->media && $post->media_type == 'image')
-                <img src="{{ asset('storage/' . $post->media) }}" alt="{{ $post->title }}" class="rounded-lg w-full object-cover mb-8">
+                <img src="{{ asset('storage/' . $post->media) }}" alt="{{ $post->title }}" class="rounded-lg w-full object-cover">
             @elseif($post->media && $post->media_type == 'video')
-                <video controls class="w-full rounded-lg mb-8">
+                <video controls class="w-full rounded-lg">
                     <source src="{{ asset('storage/' . $post->media) }}" type="video/mp4">
                     Browser Anda tidak mendukung tag video.
                 </video>
-                {{-- INI BLOK BARU UNTUK AUDIO --}}
-        @elseif($post->media && $post->media_type == 'audio')
-        <div class="mb-8">
-            <p class="text-sm font-semibold text-slate-600 mb-2">Dengarkan Audio:</p>
-            <audio controls class="w-full">
-                <source src="{{ asset('storage/' . $post->media) }}" type="audio/mpeg">
-                Browser Anda tidak mendukung elemen audio.
-            </audio>
-        </div>  
+            @elseif($post->media && $post->media_type == 'audio')
+                <div>
+                    <p class="text-sm font-semibold text-slate-600 mb-2">Dengarkan Audio:</p>
+                    <audio controls class="w-full">
+                        <source src="{{ asset('storage/' . $post->media) }}" type="audio/mpeg">
+                        Browser Anda tidak mendukung elemen audio.
+                    </audio>
+                </div>
             @endif
             
-            {{-- Konten Utama dengan Tipografi yang nyaman dibaca --}}
-            <div class="prose prose-lg max-w-none text-slate-800 leading-relaxed prose-a:text-blue-600 hover:prose-a:text-blue-800">
-                {!! nl2br(e($post->content)) !!}
-            </div>
+            {{-- === AKHIR PERUBAHAN URUTAN === --}}
         </article>
 
         {{-- Bagian Komentar --}}
