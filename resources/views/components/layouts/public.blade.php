@@ -56,9 +56,9 @@
                 @auth
                     <a href="{{ url('/dashboard') }}" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 shadow-sm hover:shadow-lg transition-all">Dashboard</a>
                 @else
-                    <a href="{{ route('login') }}" class="text-slate-600 hover:text-blue-600 font-semibold">Log in</a>
+                    <a href="{{ route('login') }}" class="text-slate-600 hover:text-blue-600 font-semibold">Masuk</a>
                     @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="ml-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-900 transition-colors">Register</a>
+                        <a href="{{ route('register') }}" class="ml-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-900 transition-colors">Daftar</a>
                     @endif
                 @endauth
             </nav>
