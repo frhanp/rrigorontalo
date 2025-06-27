@@ -17,14 +17,18 @@ class PublicController extends Controller
     public function home()
     {
         $posts = Post::with(['user', 'category'])
+                      // === AWAL PERUBAHAN LOGIKA ===
                       ->where('status', 'published')
-                      ->latest()
+                      ->where(function ($query) {
+                          $query->where('published_at', '<=', now())
+                                ->orWhereNull('published_at');
+                      })
+                      // === AKHIR PERUBAHAN LOGIKA ===
+                      ->latest('published_at') // Urutkan berdasarkan tanggal tayang
                       ->paginate(5);
-                      
-        // TAMBAHKAN INI: Ambil data kategori untuk sidebar
+        
         $nav_categories = Category::orderBy('name')->get();
-
-        // TAMBAHKAN 'nav_categories' ke compact()
+                     
         return view('home', compact('posts', 'nav_categories'));
     }
 
@@ -34,13 +38,17 @@ class PublicController extends Controller
     public function archive()
     {
         $posts = Post::where('status', 'published')
-                      ->latest()
-                      ->paginate(15);
+                     // === AWAL PERUBAHAN LOGIKA ===
+                     ->where(function ($query) {
+                          $query->where('published_at', '<=', now())
+                                ->orWhereNull('published_at');
+                      })
+                     // === AKHIR PERUBAHAN LOGIKA ===
+                     ->latest('published_at')
+                     ->paginate(15);
 
-        // TAMBAHKAN INI: Ambil data kategori untuk sidebar
         $nav_categories = Category::orderBy('name')->get();
 
-        // TAMBAHKAN 'nav_categories' ke compact()
         return view('archive', compact('posts', 'nav_categories'));
     }
 
@@ -57,7 +65,6 @@ class PublicController extends Controller
         // Ambil data komentar beserta relasi ke user-nya
         $post->load('comments.user');
 
-        // Halaman ini tidak punya sidebar, jadi tidak perlu $nav_categories
         return view('posts.show', compact('post'));
     }
 
@@ -66,16 +73,19 @@ class PublicController extends Controller
      */
     public function showByCategory(Category $category)
     {
-        // Ambil semua post yang statusnya 'published' DARI KATEGORI INI
         $posts = $category->posts()
                           ->where('status', 'published')
-                          ->latest()
+                          // === AWAL PERUBAHAN LOGIKA ===
+                          ->where(function ($query) {
+                              $query->where('published_at', '<=', now())
+                                    ->orWhereNull('published_at');
+                          })
+                          // === AKHIR PERUBAHAN LOGIKA ===
+                          ->latest('published_at')
                           ->paginate(5);
 
-        // TAMBAHKAN INI: Ambil data kategori untuk sidebar
         $nav_categories = Category::orderBy('name')->get();
 
-        // TAMBAHKAN 'nav_categories' ke compact()
         return view('categories.show', compact('posts', 'category', 'nav_categories'));
     }
 }

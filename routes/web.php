@@ -68,14 +68,15 @@ Route::middleware(['auth', 'verified', 'role:admin,editor'])->prefix('dashboard'
     Route::get('/pdf-manager', [PdfController::class, 'index'])->name('pdf.index');
     Route::get('/pdf-manager/recap', [PdfController::class, 'recap'])->name('pdf.recap'); // <-- TAMBAHKAN INI
 
-    // === ROUTE KATEGORI DIPINDAHKAN KE SINI ===
-    Route::resource('categories', CategoryController::class);
+    
+    
 });
 
 // Rute Khusus Admin
 Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     // Hanya Kelola User (Hak Akses) yang tersisa di sini
     Route::resource('users', UserController::class);
+    Route::resource('categories', CategoryController::class);
 });
 
 

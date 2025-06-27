@@ -17,7 +17,14 @@ class Post extends Model
         'status',
         'media',
         'media_type',
+        'published_at',
     ];
+
+    // Memberitahu Laravel untuk memperlakukan kolom ini sebagai objek Tanggal/Waktu (Carbon)
+    protected $casts = [
+        'published_at' => 'datetime', // <-- TAMBAHKAN INI
+    ];
+    
     public function user() {
         return $this->belongsTo(User::class);
     }

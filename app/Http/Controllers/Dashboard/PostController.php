@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class PostController extends Controller
 {/**
@@ -17,6 +18,7 @@ class PostController extends Controller
      */
         public function index()
         {
+            
             $query = Post::with('category', 'user');
 
             $posts = $query->latest()->paginate(10);
@@ -56,6 +58,7 @@ class PostController extends Controller
             'content' => 'required|string',
             'media' => 'nullable|file|mimes:jpg,png,jpeg,mp3,mp4,mov|max:20480', // max 20MB
             'status' => 'required|in:draft,published',
+            'published_at' => 'nullable|date', // <-- TAMBAHKAN INI
         ]);
 
         $mediaPath = null;
@@ -81,6 +84,7 @@ class PostController extends Controller
             'media' => $mediaPath,
             'media_type' => $mediaType,
             'status' => $request->status,
+            'published_at' => ($request->status == 'published' && !$request->published_at) ? now() : $request->published_at, // <-- TAMBAHKAN INI
         ]);
         
         // PENTING: Jalankan 'php artisan storage:link' di terminal Anda sekali saja
@@ -122,6 +126,7 @@ class PostController extends Controller
             'content' => 'required|string',
             'media' => 'nullable|file|mimes:jpg,png,jpeg,mp3,mp4,mov|max:20480',
             'status' => 'required|in:draft,published',
+            'published_at' => 'nullable|date', // <-- TAMBAHKAN INI
         ]);
 
         $mediaPath = $post->media;
@@ -152,6 +157,7 @@ class PostController extends Controller
             'media' => $mediaPath,
             'media_type' => $mediaType,
             'status' => $request->status,
+            'published_at' => ($request->status == 'published' && !$request->published_at) ? now() : $request->published_at, // <-- TAMBAHKAN INI
         ]);
 
         return redirect()->route('dashboard.posts.index')->with('success', 'Berita berhasil diperbarui.');
