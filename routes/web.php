@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\UserController;
 | Rute Publik (Bisa diakses semua pengunjung)
 |--------------------------------------------------------------------------
 */
+
 Route::get('/', [PublicController::class, 'home'])->name('home');
 Route::get('/arsip', [PublicController::class, 'archive'])->name('posts.archive');
 Route::get('/kategori/{category:slug}', [PublicController::class, 'showByCategory'])->name('categories.show');
@@ -50,6 +51,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 
 // Rute untuk Admin dan Editor
 Route::middleware(['auth', 'verified', 'role:admin,editor'])->prefix('dashboard')->name('dashboard.')->group(function () {
+    Route::post('/upload-media', [PostController::class, 'upload'])->name('posts.upload');
     // Kelola Berita
     Route::get('/posts/{post}/export-pdf', [PostController::class, 'exportPdf'])->name('posts.exportPdf');
     Route::resource('posts', PostController::class);
@@ -57,7 +59,7 @@ Route::middleware(['auth', 'verified', 'role:admin,editor'])->prefix('dashboard'
     // Kelola Komentar
     Route::get('/comments', [CommentController::class, 'index'])->name('comments.index');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
-    
+
     // Kelola Media
     Route::get('/media', [MediaController::class, 'index'])->name('media.index');
     Route::delete('/media', [MediaController::class, 'destroy'])->name('media.destroy');
@@ -65,7 +67,7 @@ Route::middleware(['auth', 'verified', 'role:admin,editor'])->prefix('dashboard'
     // Kelola PDF
     Route::get('/pdf-manager', [PdfController::class, 'index'])->name('pdf.index');
     Route::get('/pdf-manager/recap', [PdfController::class, 'recap'])->name('pdf.recap'); // <-- TAMBAHKAN INI
-    
+
     // === ROUTE KATEGORI DIPINDAHKAN KE SINI ===
     Route::resource('categories', CategoryController::class);
 });
@@ -82,4 +84,4 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
 | Rute Autentikasi Bawaan Laravel Breeze
 |--------------------------------------------------------------------------
 */
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

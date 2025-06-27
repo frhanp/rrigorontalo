@@ -5,7 +5,6 @@
         </h2>
     </x-slot>
 
-    {{-- Layout disederhanakan agar pas dengan layout sidebar --}}
     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
         <div class="p-6 text-slate-900">
             <form method="POST" action="{{ route('dashboard.posts.store') }}" enctype="multipart/form-data">
@@ -39,7 +38,7 @@
 
                 <!-- Media -->
                 <div class="mt-4">
-                    <x-input-label for="media" :value="__('Media (Gambar/Video/Audio)')" />
+                    <x-input-label for="media" :value="__('Media Utama (Gambar/Video/Audio)')" />
                     <input id="media" name="media" type="file" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
                     <x-input-error :messages="$errors->get('media')" class="mt-2" />
                 </div>
@@ -71,21 +70,88 @@
     </div>
 
     @push('scripts')
-    <!-- Muat script TinyMCE dengan API Key Anda -->
-    <script src="https://cdn.tiny.cloud/1/ejxh47zrjpaubo8l13cinpj8b48s0lck0lw9ze8uvpyozp1b/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+        <!-- Muat script TinyMCE dengan API Key Anda -->
+        <script src="https://cdn.tiny.cloud/1/ejxh47zrjpaubo8l13cinpj8b48s0lck0lw9ze8uvpyozp1b/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 
-    <!-- Inisialisasi editor untuk textarea Anda -->
-    <script>
-        tinymce.init({
-            selector: 'textarea#content',
-            plugins: 'code table lists image link fullscreen visualblocks wordcount media',
-            toolbar: 'undo redo | blocks | bold italic underline | link image media | bullist numlist | code | fullscreen',
-            height: 500,
-            
-            // === PERUBAHAN DI SINI: Memaksa tema terang ===
-            skin: 'oxide',
-            content_css: 'default'
-        });
-    </script>
-@endpush
+        <script>
+            tinymce.init({
+                selector: 'textarea#content',
+                plugins: 'code table lists image link fullscreen visualblocks wordcount media',
+                toolbar: 'undo redo | blocks | bold italic underline | link image media | bullist numlist | code | fullscreen',
+                height: 500,
+                skin: 'oxide',
+                content_css: 'default',
+
+                images_upload_handler: (blobInfo, progress) => new Promise((resolve, reject) => {
+                    const xhr = new XMLHttpRequest();
+                    xhr.withCredentials = false;
+                    xhr.open('POST', "{{ route('dashboard.posts.upload') }}");
+                    
+                    const token = '{{ csrf_token() }}';
+                    xhr.setRequestHeader("X-CSRF-Token", token);
+
+                    xhr.upload.onprogress = (e) => {
+                        progress(e.loaded / e.total * 100);
+                    };
+                
+                    xhr.onload = () => {
+                        if (xhr.status < 200 || xhr.status >= 300) {
+                            return reject('HTTP Error: ' + xhr.status);
+                        }
+                
+                        const json = JSON.parse(xhr.responseText);
+                
+                        if (!json || typeof json.location != 'string') {
+                            return reject('Invalid JSON: ' + xhr.responseText);
+                        }
+                
+                        resolve(json.location);
+                    };
+
+                    xhr.onerror = () => {
+                      reject('Image upload failed due to a XHR Transport error. Code: ' + xhr.status);
+                    };
+                
+                    const formData = new FormData();
+                    formData.append('file', blobInfo.blob(), blobInfo.filename());
+                
+                    xhr.send(formData);
+                }),
+
+                file_picker_callback: (cb, value, meta) => {
+                    const input = document.createElement('input');
+                    input.setAttribute('type', 'file');
+                    if (meta.filetype === 'media' || meta.filetype === 'audio') {
+                        input.setAttribute('accept', 'audio/*,video/*');
+                    }
+                     if (meta.filetype === 'image') {
+                        input.setAttribute('accept', 'image/*');
+                    }
+
+                    input.addEventListener('change', (e) => {
+                        const file = e.target.files[0];
+                        
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        const token = '{{ csrf_token() }}';
+
+                        fetch("{{ route('dashboard.posts.upload') }}", {
+                            method: 'POST',
+                            headers: { 'X-CSRF-Token': token },
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(result => {
+                            cb(result.location, { title: file.name });
+                        })
+                        .catch(error => {
+                            console.error('Upload error:', error);
+                        });
+                    });
+
+                    input.click();
+                },
+            });
+        </script>
+    @endpush
 </x-app-layout>

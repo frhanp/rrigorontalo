@@ -23,6 +23,19 @@ class PostController extends Controller
             return view('dashboard.posts.index', compact('posts'));
         }
 
+        public function upload(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:jpg,jpeg,png,gif,mp3,mp4|max:20480', // Maks 20MB
+        ]);
+
+        $file = $request->file('file');
+        $path = $file->store('content_media', 'public'); // Simpan di folder storage/app/public/content_media
+
+        // TinyMCE membutuhkan response JSON dengan format 'location'
+        return response()->json(['location' => asset('storage/' . $path)]);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
