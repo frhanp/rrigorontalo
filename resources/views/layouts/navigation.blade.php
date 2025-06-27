@@ -19,9 +19,15 @@
              <svg class="w-5 h-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v2.25H6V7.5z" /></svg>
             <span>{{ __('Postingan') }}</span>
         </x-nav-link>
+
+        {{-- === LINK KATEGORI DIPINDAHKAN KE SINI === --}}
+        <x-nav-link :href="route('dashboard.categories.index')" :active="request()->routeIs('dashboard.categories.*')">
+            <img src="{{ asset('images/kategori.png') }}" alt="Ikon Kelola Kategori" class="w-4 h-4 mr-3">
+            <span>{{ __('Kategori') }}</span>
+        </x-nav-link>
         
         <x-nav-link :href="route('dashboard.comments.index')" :active="request()->routeIs('dashboard.comments.*')">
-            <img src="{{ asset('images/comment.png') }}" alt="Ikon Kelola Berita" class="w-5 h-5 mr-3">
+            <img src="{{ asset('images/comment.png') }}" alt="Ikon Kelola Komentar" class="w-5 h-5 mr-3">
             <span>{{ __('Komentar') }}</span>
         </x-nav-link>
 
@@ -40,12 +46,9 @@
         <!-- Menu Khusus Admin -->
         @if (Auth::user()->role === 'admin')
             <p class="px-4 pt-4 pb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">Admin</p>
-            <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
-                <img src="{{ asset('images/kategori.png') }}" alt="Ikon Kelola Berita" class="w-4 h-4 mr-3">
-                <span>{{ __('Kategori') }}</span>
-            </x-nav-link>
+            {{-- Link kategori sudah dipindah ke atas --}}
             <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
-                <img src="{{ asset('images/users.png') }}" alt="Ikon Kelola Berita" class="w-5 h-5 mr-3">
+                <img src="{{ asset('images/users.png') }}" alt="Ikon Hak Akses" class="w-5 h-5 mr-3">
                 <span>{{ __('Hak Akses') }}</span>
             </x-nav-link>
         @endif

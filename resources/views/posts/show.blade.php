@@ -16,9 +16,7 @@
                 <span class="mx-2">&bull;</span>
                 <span>Diterbitkan pada {{ $post->created_at->format('d F Y, H:i') }}</span>
             </div>
-        
             {{-- === AWAL PERUBAHAN URUTAN === --}}
-        
             {{-- 1. KONTEN UTAMA DITAMPILKAN TERLEBIH DAHULU --}}
             <div class="prose prose-lg max-w-none text-slate-800 leading-relaxed prose-a:text-blue-600 hover:prose-a:text-blue-800 mb-8">
                 {!! $post->content !!}

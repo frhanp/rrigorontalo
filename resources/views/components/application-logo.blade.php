@@ -1,4 +1,4 @@
-<a href="#" class="transition-transform duration-300 hover:scale-105">
+<a href="/" class="transition-transform duration-300 hover:scale-105">
     <div class="flex items-center space-x-3">
         <!-- Menggunakan SVG sebagai gambar biasa -->
         <img src="{{ asset('images/rrilogo.svg') }}" alt="Logo RRI Gorontalo" class="w-12 h-auto">
