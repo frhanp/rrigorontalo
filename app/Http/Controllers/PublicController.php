@@ -11,22 +11,37 @@ class PublicController extends Controller
     /**
      * Menampilkan homepage dengan daftar berita yang sudah di-publish.
      */
+    /**
+     * Menampilkan homepage dengan daftar berita yang sudah di-publish.
+     */
     public function home()
     {
         $posts = Post::with(['user', 'category'])
-                     ->where('status', 'published')
-                     ->latest()
-                     ->paginate(5);
-                     
-        return view('home', compact('posts'));
+                      ->where('status', 'published')
+                      ->latest()
+                      ->paginate(5);
+                      
+        // TAMBAHKAN INI: Ambil data kategori untuk sidebar
+        $nav_categories = Category::orderBy('name')->get();
+
+        // TAMBAHKAN 'nav_categories' ke compact()
+        return view('home', compact('posts', 'nav_categories'));
     }
+
+    /**
+     * Menampilkan halaman arsip semua berita.
+     */
     public function archive()
     {
         $posts = Post::where('status', 'published')
-                     ->latest()
-                     ->paginate(15); // Tampilkan 15 berita per halaman
+                      ->latest()
+                      ->paginate(15);
 
-        return view('archive', compact('posts'));
+        // TAMBAHKAN INI: Ambil data kategori untuk sidebar
+        $nav_categories = Category::orderBy('name')->get();
+
+        // TAMBAHKAN 'nav_categories' ke compact()
+        return view('archive', compact('posts', 'nav_categories'));
     }
 
     /**
@@ -42,6 +57,7 @@ class PublicController extends Controller
         // Ambil data komentar beserta relasi ke user-nya
         $post->load('comments.user');
 
+        // Halaman ini tidak punya sidebar, jadi tidak perlu $nav_categories
         return view('posts.show', compact('post'));
     }
 
@@ -50,14 +66,16 @@ class PublicController extends Controller
      */
     public function showByCategory(Category $category)
     {
-        // Ambil semua post yang statusnya 'published' DARI KATEGORI INI,
-        // urutkan dari yang terbaru, dan paginasi.
+        // Ambil semua post yang statusnya 'published' DARI KATEGORI INI
         $posts = $category->posts()
                           ->where('status', 'published')
                           ->latest()
-                          ->paginate(5); // Angka 5 bisa Anda sesuaikan
+                          ->paginate(5);
 
-        // Kirim data posts dan data kategori itu sendiri ke sebuah view baru
-        return view('categories.show', compact('posts', 'category'));
+        // TAMBAHKAN INI: Ambil data kategori untuk sidebar
+        $nav_categories = Category::orderBy('name')->get();
+
+        // TAMBAHKAN 'nav_categories' ke compact()
+        return view('categories.show', compact('posts', 'category', 'nav_categories'));
     }
 }
