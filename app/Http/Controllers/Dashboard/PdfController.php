@@ -48,35 +48,35 @@ class PdfController extends Controller
         $selectedMonth = $request->input('month');
         $selectedCategoryId = $request->input('category_id');
         
-        // Data untuk judul laporan
         $categoryName = 'Semua Kategori';
         $monthName = 'Semua Waktu';
         
-        // Terapkan filter yang sama persis dan siapkan judul laporan
+        // Terapkan filter dan siapkan judul laporan
         if ($selectedMonth) {
-            $year = substr($selectedMonth, 0, 4);
-            $month = substr($selectedMonth, 5, 2);
+            // === AWAL PERBAIKAN ===
+            // Ubah string tahun dan bulan menjadi angka (integer)
+            $year = (int) substr($selectedMonth, 0, 4);
+            $month = (int) substr($selectedMonth, 5, 2);
+            // === AKHIR PERBAIKAN ===
+
             $query->whereYear('created_at', $year)->whereMonth('created_at', $month);
             $monthName = now()->month($month)->year($year)->format('F Y');
         }
 
         if ($selectedCategoryId) {
             $query->where('category_id', $selectedCategoryId);
-            // Ambil nama kategori dengan aman
             $category = Category::find($selectedCategoryId);
             if ($category) {
                 $categoryName = $category->name;
             }
         }
         
-        // Ambil SEMUA data yang cocok (tanpa paginate)
         $posts = $query->latest()->get();
         
         $filename = 'Rekap Berita - ' . str_replace(' ', '_', $categoryName) . ' - ' . str_replace(' ', '_', $monthName) . '.pdf';
 
         $pdf = PDF::loadView('dashboard.pdf.recap', compact('posts', 'categoryName', 'monthName'));
         
-        // Atur orientasi menjadi portrait dan kertas A4
         return $pdf->setPaper('a4', 'portrait')->download($filename);
     }
 }
