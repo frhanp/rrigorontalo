@@ -11,21 +11,34 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use App\Models\User;
 
 class PostController extends Controller
-{/**
+{
+    /**
      * Display a listing of the resource.
      */
-        public function index()
-        {
-            
-            $query = Post::with('category', 'user');
+    public function index(Request $request)
+    {
+        // Ambil semua user untuk dropdown filter
+        $authors = User::orderBy('name')->get();
+        
+        // Mulai query
+        $query = Post::with('category', 'user');
 
-            $posts = $query->latest()->paginate(10);
-            return view('dashboard.posts.index', compact('posts'));
+        // Terapkan filter penulis jika ada
+        $selectedAuthor = $request->input('author');
+        if ($selectedAuthor) {
+            $query->where('user_id', $selectedAuthor);
         }
 
-        public function upload(Request $request)
+        // Paginasi dan sertakan parameter filter di link halaman
+        $posts = $query->latest()->paginate(10)->withQueryString();
+
+        return view('dashboard.posts.index', compact('posts', 'authors', 'selectedAuthor'));
+    }
+
+    public function upload(Request $request)
     {
         $request->validate([
             'file' => 'required|mimes:jpg,jpeg,png,gif,mp3,mp4|max:20480', // Maks 20MB
@@ -86,7 +99,7 @@ class PostController extends Controller
             'status' => $request->status,
             'published_at' => ($request->status == 'published' && !$request->published_at) ? now() : $request->published_at, // <-- TAMBAHKAN INI
         ]);
-        
+
         // PENTING: Jalankan 'php artisan storage:link' di terminal Anda sekali saja
         return redirect()->route('dashboard.posts.index')->with('success', 'Berita berhasil dibuat.');
     }
@@ -96,28 +109,23 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        // Otorisasi: Hanya penulis asli atau admin yang boleh edit
-        if (Auth::user()->role !== 'admin' && Auth::id() !== $post->user_id) {
-            abort(403, 'ANDA TIDAK BERHAK MENGEDIT POSTINGAN INI.');
+        // === PERUBAHAN DI SINI ===
+        if (Auth::user()->role === 'editor' && $post->status === 'published') {
+            // Ganti abort(403) dengan redirect dan pesan error
+            return back()->with('error', 'Anda tidak dapat mengedit postingan yang sudah terbit.');
         }
 
         $categories = Category::orderBy('name')->get();
-
-        // TAMBAHKAN BARIS INI untuk mengambil data komentar terkait
         $post->load('comments.user');
 
         return view('dashboard.posts.edit', compact('post', 'categories'));
     }
 
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Post $post)
     {
-        // Otorisasi
-        if (Auth::user()->role !== 'admin' && Auth::id() !== $post->user_id) {
-            abort(403);
+        // === PERUBAHAN DI SINI ===
+        if (Auth::user()->role === 'editor' && $post->status === 'published') {
+            return back()->with('error', 'Anda tidak dapat mengedit postingan yang sudah terbit.');
         }
 
         $request->validate([
@@ -126,18 +134,16 @@ class PostController extends Controller
             'content' => 'required|string',
             'media' => 'nullable|file|mimes:jpg,png,jpeg,mp3,mp4,mov|max:20480',
             'status' => 'required|in:draft,published',
-            'published_at' => 'nullable|date', // <-- TAMBAHKAN INI
+            'published_at' => 'nullable|date',
         ]);
 
         $mediaPath = $post->media;
         $mediaType = $post->media_type;
 
         if ($request->hasFile('media')) {
-            // Hapus media lama jika ada
             if ($post->media) {
                 Storage::disk('public')->delete($post->media);
             }
-            // Simpan media baru
             $mediaPath = $request->file('media')->store('posts', 'public');
             $mime = $request->file('media')->getMimeType();
             if (strstr($mime, "video/")) {
@@ -157,7 +163,7 @@ class PostController extends Controller
             'media' => $mediaPath,
             'media_type' => $mediaType,
             'status' => $request->status,
-            'published_at' => ($request->status == 'published' && !$request->published_at) ? now() : $request->published_at, // <-- TAMBAHKAN INI
+            'published_at' => ($request->status == 'published' && !$request->published_at) ? now() : $request->published_at,
         ]);
 
         return redirect()->route('dashboard.posts.index')->with('success', 'Berita berhasil diperbarui.');
@@ -168,8 +174,12 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        // === PERUBAHAN DI SINI ===
+        if (Auth::user()->role === 'editor' && $post->status === 'published') {
+            return back()->with('error', 'Anda tidak dapat menghapus postingan yang sudah terbit.');
+        }
         // Otorisasi
-        if (Auth::user()->role !== 'admin' && Auth::id() !== $post->user_id) {
+        if (!in_array(Auth::user()->role, ['admin', 'editor'])) {
             abort(403);
         }
 
@@ -188,8 +198,10 @@ class PostController extends Controller
      */
     public function exportPdf(Post $post)
     {
-        if (Auth::user()->role !== 'admin' && Auth::id() !== $post->user_id) {
-            abort(403);
+        // === PERUBAHAN LOGIKA HAK AKSES ===
+        // Sekarang, semua user dengan role 'admin' ATAU 'editor' bisa mengekspor.
+        if (!in_array(Auth::user()->role, ['admin', 'editor'])) {
+            abort(403, 'ANDA TIDAK MEMILIKI HAK AKSES UNTUK MELAKUKAN INI.');
         }
 
         $pdf = PDF::loadView('dashboard.posts.pdf', compact('post'));

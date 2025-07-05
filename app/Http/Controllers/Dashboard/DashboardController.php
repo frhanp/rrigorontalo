@@ -22,9 +22,10 @@ class DashboardController extends Controller
         $publishedPosts = Post::where('status', 'published')->count();
         $draftPosts = Post::where('status', 'draft')->count();
         $totalCategories = Category::count();
-        
-        // Statistik yang bisa dilihat semua role dashboard
         $totalComments = Comment::count();
+        
+        // === STATISTIK BARU UNTUK USER YANG LOGIN ===
+        $userPostCount = Post::where('user_id', Auth::id())->count();
         
         // Statistik Khusus Admin
         $totalUsers = null;
@@ -42,6 +43,7 @@ class DashboardController extends Controller
             'draftPosts',
             'totalCategories',
             'totalComments',
+            'userPostCount', // <-- Kirim data baru ke view
             'totalUsers',
             'latestPosts',
             'latestComments'

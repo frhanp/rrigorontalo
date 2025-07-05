@@ -8,28 +8,15 @@ use App\Models\Category;
 
 class PublicController extends Controller
 {
-    /**
-     * Menampilkan homepage dengan daftar berita yang sudah di-publish.
-     */
-    /**
-     * Menampilkan homepage dengan daftar berita yang sudah di-publish.
+     /**
+     * Menampilkan halaman utama dengan layout sidebar dan area sambutan.
      */
     public function home()
     {
-        $posts = Post::with(['user', 'category'])
-                      // === AWAL PERUBAHAN LOGIKA ===
-                      ->where('status', 'published')
-                      ->where(function ($query) {
-                          $query->where('published_at', '<=', now())
-                                ->orWhereNull('published_at');
-                      })
-                      // === AKHIR PERUBAHAN LOGIKA ===
-                      ->latest('published_at') // Urutkan berdasarkan tanggal tayang
-                      ->paginate(5);
-        
+        // Method ini sekarang HANYA mengambil data kategori untuk sidebar.
         $nav_categories = Category::orderBy('name')->get();
                      
-        return view('home', compact('posts', 'nav_categories'));
+        return view('home', compact('nav_categories'));
     }
 
     /**
@@ -38,52 +25,46 @@ class PublicController extends Controller
     public function archive()
     {
         $posts = Post::where('status', 'published')
-                     // === AWAL PERUBAHAN LOGIKA ===
                      ->where(function ($query) {
                           $query->where('published_at', '<=', now())
                                 ->orWhereNull('published_at');
                       })
-                     // === AKHIR PERUBAHAN LOGIKA ===
                      ->latest('published_at')
                      ->paginate(15);
 
+        // Halaman arsip juga butuh data kategori untuk sidebarnya.
         $nav_categories = Category::orderBy('name')->get();
 
         return view('archive', compact('posts', 'nav_categories'));
     }
 
     /**
-     * Menampilkan satu berita secara detail beserta komentarnya.
+     * Menampilkan satu berita secara detail.
      */
     public function showPost(Post $post)
     {
-        // Pastikan hanya post yang statusnya 'published' yang bisa diakses publik
         if ($post->status !== 'published') {
             abort(404);
         }
-
-        // Ambil data komentar beserta relasi ke user-nya
         $post->load('comments.user');
-
         return view('posts.show', compact('post'));
     }
 
     /**
-     * Menampilkan postingan berdasarkan kategori yang dipilih.
+     * Menampilkan postingan berdasarkan kategori.
      */
     public function showByCategory(Category $category)
     {
         $posts = $category->posts()
                           ->where('status', 'published')
-                          // === AWAL PERUBAHAN LOGIKA ===
                           ->where(function ($query) {
                               $query->where('published_at', '<=', now())
                                     ->orWhereNull('published_at');
                           })
-                          // === AKHIR PERUBAHAN LOGIKA ===
                           ->latest('published_at')
                           ->paginate(5);
 
+        // Halaman kategori juga butuh data kategori lain untuk sidebarnya.
         $nav_categories = Category::orderBy('name')->get();
 
         return view('categories.show', compact('posts', 'category', 'nav_categories'));

@@ -14,6 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>[x-cloak] { display: none !important; }</style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -73,6 +74,30 @@
         </div>
     </div>
     @stack('scripts')
+    <script>
+        // Cek jika ada pesan sukses dari session
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                timer: 2500, // Notifikasi akan hilang setelah 2.5 detik
+                showConfirmButton: false
+            });
+        @endif
+
+        // Cek jika ada pesan error dari session
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Akses Ditolak!',
+                text: '{{ session('error') }}',
+                confirmButtonText: 'Mengerti',
+                confirmButtonColor: '#3b82f6' // Warna biru
+            });
+        @endif
+    </script>
+
 </body>
 
 </html>

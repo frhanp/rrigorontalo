@@ -1,6 +1,6 @@
 <x-layouts.public>
     <x-slot name="title">
-        Beranda - RRI Gorontalo
+        Selamat Datang - RRI Gorontalo
     </x-slot>
 
     {{-- State untuk buka/tutup sidebar di mobile --}}
@@ -31,7 +31,7 @@
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                     <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
-                        <h3 class="text-xl font-bold mb-4 text-slate-900 pb-2 border-b-2 border-slate-200">Kategori</h3>
+                        <h3 class="text-xl font-bold mb-4 text-slate-900 pb-2 border-b-2 border-slate-200">Kategori Berita</h3>
                         <ul class="space-y-2">
                             @foreach ($nav_categories as $category)
                                 <li>
@@ -52,34 +52,22 @@
                 </div>
             </aside>
 
-            {{-- KONTEN UTAMA (KANAN) --}}
+            {{-- KONTEN UTAMA (KANAN) - Area Sambutan Statis --}}
             <div class="lg:col-span-3">
-                <h2 class="text-3xl font-bold mb-8 text-slate-900 pb-2 border-b-4 border-blue-600 inline-block">Berita Terbaru</h2>
-                <div class="space-y-10">
-                    @forelse($posts as $post)
-                        <article class="group bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
-                           @if($post->media && $post->media_type == 'image')
-                                <div class="overflow-hidden">
-                                    <a href="{{ route('posts.show', $post->slug) }}"><img src="{{ asset('storage/' . $post->media) }}" alt="{{ $post->title }}" class="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-105"></a>
-                                </div>
-                            @endif
-                            <div class="p-6">
-                                <a href="{{ route('categories.show', $post->category) }}" class="inline-block bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-3 hover:bg-blue-200 transition-colors">{{ $post->category->name }}</a>
-                                <h3 class="text-2xl font-bold mb-3"><a href="{{ route('posts.show', $post->slug) }}" class="text-slate-900 group-hover:text-blue-700 transition duration-300">{{ $post->title }}</a></h3>
-                                <div class="text-sm text-slate-500 mb-4">
-                                    <span class="font-semibold">{{ $post->user->name }}</span>
-                                    <span class="mx-2">&bull;</span>
-                                    <span>{{ $post->created_at->format('d F Y') }}</span>
-                                </div>
-                                <p class="text-slate-600 text-base leading-relaxed">{{ Str::limit(strip_tags($post->content), 250) }}</p>
-                            </div>
-                        </article>
-                    @empty
-                        <div class="bg-white p-10 rounded-lg shadow-sm border border-slate-200"><p class="text-center text-slate-500">Belum ada berita yang dipublikasikan.</p></div>
-                    @endforelse
-                </div>
-                <div class="mt-10">
-                    {{ $posts->links('pagination::tailwind') }}
+                <div class="flex flex-col items-center justify-center text-center bg-white rounded-xl shadow-md border border-slate-200 p-10" style="min-height: 70vh;">
+                    <img src="{{ asset('images/rrilogo.svg') }}" alt="Logo RRI Gorontalo" class="w-32 h-auto mb-6">
+                    <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">
+                        Selamat Datang
+                    </h1>
+                    <p class="mt-4 max-w-2xl text-lg text-slate-600">
+                        Ini adalah Portal Berita Internal RRI Gorontalo. Silakan gunakan menu kategori di samping untuk menavigasi berita atau buka arsip untuk melihat semua postingan.
+                    </p>
+                    {{-- <div class="mt-8">
+                        <a href="{{ route('posts.archive') }}" 
+                           class="inline-flex items-center justify-center px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 transform hover:-translate-y-1">
+                            Buka Arsip Berita
+                        </a>
+                    </div> --}}
                 </div>
             </div>
 

@@ -17,7 +17,7 @@
         </div>
 
         {{-- Kartu Statistik Interaktif --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- Total Berita -->
             <a href="{{ route('dashboard.posts.index') }}" class="group block">
                 <div
@@ -74,21 +74,45 @@
             </a>
             <!-- Total Komentar -->
             <a href="{{ route('dashboard.comments.index') }}" class="group block">
-                <div class="bg-white p-6 rounded-lg shadow-sm flex items-start justify-between border border-transparent transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 hover:border-sky-300">
+                <div
+                    class="bg-white p-6 rounded-lg shadow-sm flex items-start justify-between border border-transparent transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 hover:border-sky-300">
                     <div>
                         <p class="text-sm font-medium text-slate-500 uppercase tracking-wider">Total Komentar</p>
                         <p class="text-3xl font-bold text-slate-900 mt-1">{{ $totalComments }}</p>
                     </div>
-                    <div class="bg-sky-100 text-sky-600 p-3 rounded-full transition-colors duration-300 group-hover:bg-sky-600 group-hover:text-white">
-                        
+                    <div
+                        class="bg-sky-100 text-sky-600 p-3 rounded-full transition-colors duration-300 group-hover:bg-sky-600 group-hover:text-white">
+
                         {{-- SVG dikembalikan menjadi inline agar efek hover berfungsi --}}
-                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
+                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
                         </svg>
-            
+
                     </div>
                 </div>
             </a>
+
+            {{-- === KARTU STATISTIK BARU: BERITA ANDA === --}}
+            <a href="{{ route('dashboard.posts.index', ['author' => Auth::id()]) }}" class="group block">
+                <div
+                    class="bg-white p-6 rounded-lg shadow-sm flex items-start justify-between border border-transparent transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 hover:border-teal-300">
+                    <div>
+                        <p class="text-sm font-medium text-slate-500 uppercase tracking-wider">Berita Anda</p>
+                        <p class="text-3xl font-bold text-teal-600 mt-1">{{ $userPostCount }}</p>
+                    </div>
+                    <div
+                        class="bg-teal-100 text-teal-600 p-3 rounded-full transition-colors duration-300 group-hover:bg-teal-600 group-hover:text-white">
+                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                        </svg>
+                    </div>
+                </div>
+            </a>
+
             <!-- Total Pengguna (Hanya Admin) -->
             @if (Auth::user()->role === 'admin')
                 <a href="{{ route('admin.users.index') }}" class="group block">
@@ -150,7 +174,8 @@
                             <div class="flex-grow">
                                 <p class="text-sm text-slate-800">
                                     <span class="font-semibold">{{ $comment->user->name }}</span> mengomentari
-                                    <a href="{{ route('posts.show', $comment->post->slug) }}#comments" target="_blank"
+                                    <a href="{{ route('posts.show', $comment->post->slug) }}#comments"
+                                        target="_blank"
                                         class="font-semibold text-blue-600 hover:underline">"{{ Str::limit($comment->post->title, 20) }}"</a>
                                 </p>
                                 <p class="text-xs text-slate-500 italic mt-1">

@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\UserController;
 */
 
 Route::get('/', [PublicController::class, 'home'])->name('home');
+Route::get('/berita', [PublicController::class, 'beritaIndex'])->name('berita.index');
 Route::get('/arsip', [PublicController::class, 'archive'])->name('posts.archive');
 Route::get('/kategori/{category:slug}', [PublicController::class, 'showByCategory'])->name('categories.show');
 Route::get('/posts/{post:slug}', [PublicController::class, 'showPost'])->name('posts.show');

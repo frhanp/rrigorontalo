@@ -5,7 +5,7 @@
         
         <div>
             <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">PORTAL BERITA</h1>
-            <p class="text-sm font-semibold text-blue-600 -mt-1">INTERN RRI GORONTALO</p>
+            <p class="text-sm font-semibold text-blue-600 -mt-1">RRI GORONTALO</p>
         </div>
     </div>
 </a>
