@@ -46,6 +46,18 @@
                             </select>
                         </div>
 
+                        <div>
+                            <x-input-label for="author_id" :value="__('Penulis')" />
+                            <select name="author_id" id="author_id" onchange="this.form.submit()" class="block mt-1 w-full border-slate-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm">
+                                <option value="">Semua Penulis</option>
+                                @foreach ($authors as $author)
+                                    <option value="{{ $author->id }}" {{ $selectedAuthorId == $author->id ? 'selected' : '' }}>
+                                        {{ $author->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         {{-- Tombol Rekap & Reset --}}
                         <div class="flex items-center space-x-2 pt-5">
                             <a href="{{ route('dashboard.pdf.index') }}" class="inline-flex items-center px-4 py-2 bg-white border border-slate-300 rounded-md font-semibold text-xs text-slate-700 uppercase tracking-widest shadow-sm hover:bg-slate-50">

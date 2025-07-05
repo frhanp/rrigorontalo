@@ -42,6 +42,7 @@
         <h1>REKAPITULASI BERITA</h1>
         <h2>PORTAL INTERNAL RRI GORONTALO</h2>
         <p>
+            <strong>Filter Penulis:</strong> {{ $authorName }}<br>
             <strong>Filter Kategori:</strong> {{ $categoryName }}<br>
             <strong>Filter Waktu:</strong> {{ $monthName }}
         </p>
