@@ -18,6 +18,31 @@
 
         {{-- Kartu Statistik Interaktif --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {{-- === KARTU STATISTIK BARU: TOTAL BERITA === --}}
+            <!-- Berita Hari Ini (Diperbaiki dengan link dan hover) -->
+            <a href="{{ route('dashboard.posts.index', ['start_date' => now()->toDateString(), 'end_date' => now()->toDateString()]) }}"
+                class="group block">
+                <div
+                    class="bg-white p-6 rounded-lg shadow-sm flex items-start justify-between border border-transparent transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 hover:border-blue-300">
+                    <div>
+                        <p class="text-sm font-medium text-slate-500 uppercase tracking-wider">Berita Hari Ini</p>
+                        <p class="text-3xl font-bold text-slate-900 mt-1">{{ $todayPostsCount }}</p>
+                        @if ($dailyChange > 0)
+                            <p class="text-xs font-medium text-green-500 mt-1">+{{ $dailyChange }} dari kemarin</p>
+                        @elseif ($dailyChange < 0)
+                            <p class="text-xs font-medium text-red-500 mt-1">{{ $dailyChange }} dari kemarin</p>
+                        @else
+                            <p class="text-xs font-medium text-slate-500 mt-1">Sama seperti kemarin</p>
+                        @endif
+                    </div>
+                    <div
+                        class="bg-blue-100 text-blue-600 p-3 rounded-full transition-colors duration-300 group-hover:bg-blue-600 group-hover:text-white">
+                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0h18M12 12.75h.008v.008H12v-.008z" />
+                          </svg>
+                    </div>
+                </div>
+            </a>
             <!-- Total Berita -->
             <a href="{{ route('dashboard.posts.index') }}" class="group block">
                 <div
@@ -124,8 +149,8 @@
                         </div>
                         <div
                             class="bg-indigo-100 text-indigo-600 p-3 rounded-full transition-colors duration-300 group-hover:bg-indigo-600 group-hover:text-white">
-                            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke-width="1.5" stroke="currentColor">
+                            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-4.67c.12-.241.253-.477.398-.702a8.998 8.998 0 01-1.152 4.243zM11.625 10.5a3.375 3.375 0 100-6.75 3.375 3.375 0 000 6.75z" />
                             </svg>

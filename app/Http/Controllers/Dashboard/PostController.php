@@ -26,16 +26,28 @@ class PostController extends Controller
         // Mulai query
         $query = Post::with('category', 'user');
 
-        // Terapkan filter penulis jika ada
+        // === AWAL PERBAIKAN LOGIKA FILTER ===
+        
+        // Filter Penulis
         $selectedAuthor = $request->input('author');
         if ($selectedAuthor) {
             $query->where('user_id', $selectedAuthor);
         }
 
+        // Filter Tanggal
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        if ($startDate && $endDate) {
+            $query->whereDate('created_at', '>=', $startDate)
+                  ->whereDate('created_at', '<=', $endDate);
+        }
+
+        // === AKHIR PERBAIKAN LOGIKA FILTER ===
+
         // Paginasi dan sertakan parameter filter di link halaman
         $posts = $query->latest()->paginate(10)->withQueryString();
 
-        return view('dashboard.posts.index', compact('posts', 'authors', 'selectedAuthor'));
+        return view('dashboard.posts.index', compact('posts', 'authors', 'selectedAuthor', 'startDate', 'endDate'));
     }
 
     public function upload(Request $request)

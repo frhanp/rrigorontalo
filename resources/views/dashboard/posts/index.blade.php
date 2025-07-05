@@ -8,12 +8,21 @@
     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
         <div class="p-6 text-slate-900">
 
-            {{-- === AWAL FORM FILTER PENULIS === --}}
-            <div class="mb-6 pb-6 border-b border-slate-200 flex justify-between items-center">
-                <form id="filter-form" method="GET" action="{{ route('dashboard.posts.index') }}" class="flex items-center space-x-4">
-                    <div>
-                        <x-input-label for="author" :value="__('Filter Penulis')" class="sr-only" />
-                        <select name="author" id="author" onchange="this.form.submit()" class="block w-full border-slate-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm">
+            {{-- === AWAL FORM FILTER DINAMIS === --}}
+            <div class="mb-6 pb-6 border-b border-slate-200">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-medium text-slate-800">Filter Berita</h3>
+                    <a href="{{ route('dashboard.posts.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700">
+                        Tambah Postingan Baru
+                    </a>
+                </div>
+                <p class="text-sm text-slate-500 mt-1">Hasil akan diperbarui secara otomatis saat Anda mengubah filter.</p>
+                
+                <form id="filter-form" method="GET" action="{{ route('dashboard.posts.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 items-end">
+                    {{-- Filter Penulis --}}
+                    <div class="w-full">
+                        <x-input-label for="author" :value="__('Penulis')" />
+                        <select name="author" id="author" onchange="this.form.submit()" class="block w-full mt-1 border-slate-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm">
                             <option value="">Semua Penulis</option>
                             @foreach ($authors as $author)
                                 <option value="{{ $author->id }}" {{ $selectedAuthor == $author->id ? 'selected' : '' }}>
@@ -22,15 +31,26 @@
                             @endforeach
                         </select>
                     </div>
-                     <a href="{{ route('dashboard.posts.index') }}" class="text-sm text-slate-500 hover:text-blue-600">Reset</a>
-                </form>
-                
-                <a href="{{ route('dashboard.posts.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700">
-                    Tambah Postingan Baru
-                </a>
-            </div>
-            {{-- === AKHIR FORM FILTER PENULIS === --}}
+                    
+                    {{-- Filter Tanggal Mulai --}}
+                    <div class="w-full">
+                        <x-input-label for="start_date" :value="__('Dari Tanggal')" />
+                        <x-text-input type="date" name="start_date" id="start_date" :value="$startDate" onchange="this.form.submit()" class="block w-full mt-1" />
+                    </div>
 
+                    {{-- Filter Tanggal Akhir --}}
+                    <div class="w-full">
+                        <x-input-label for="end_date" :value="__('Sampai Tanggal')" />
+                        <x-text-input type="date" name="end_date" id="end_date" :value="$endDate" onchange="this.form.submit()" class="block w-full mt-1" />
+                    </div>
+
+                    {{-- Tombol Reset --}}
+                    <div class="flex items-center">
+                        <a href="{{ route('dashboard.posts.index') }}" class="w-full inline-flex items-center justify-center px-4 py-2 bg-white border border-slate-300 rounded-md font-semibold text-xs text-slate-700 uppercase tracking-widest shadow-sm hover:bg-slate-50">Reset Filter</a>
+                    </div>
+                </form>
+            </div>
+            {{-- === AKHIR FORM FILTER DINAMIS === --}}
 
             @if (session('success'))
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
@@ -46,6 +66,7 @@
                             <th scope="col" class="px-6 py-3">Kategori</th>
                             <th scope="col" class="px-6 py-3">Status</th>
                             <th scope="col" class="px-6 py-3">Penulis</th>
+                            <th scope="col" class="px-6 py-3">Tanggal Dibuat</th>
                             <th scope="col" class="px-6 py-3">Aksi</th>
                         </tr>
                     </thead>
@@ -60,10 +81,11 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4">{{ $post->user->name }}</td>
+                            <td class="px-6 py-4">{{ $post->created_at->format('d M Y') }}</td>
                             <td class="px-6 py-4 flex items-center space-x-3">
                                 <a href="{{ route('dashboard.posts.edit', $post) }}" class="font-medium text-blue-600 hover:underline">Edit</a>
                                 <a href="{{ route('dashboard.posts.exportPdf', $post) }}" class="font-medium text-purple-600 hover:underline">PDF</a>
-                                <form action="{{ route('dashboard.posts.destroy', $post) }}" method="POST">
+                                <form action="{{ route('dashboard.posts.destroy', $post) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus berita ini?');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="font-medium text-red-600 hover:underline">Hapus</button>
@@ -72,7 +94,10 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-4 text-center">Tidak ada berita yang ditemukan.</td>
+                            <td colspan="6" class="px-6 py-4 text-center">
+                                <p class="font-semibold">Tidak ada berita yang ditemukan.</p>
+                                <p class="text-xs text-slate-500 mt-1">Coba ganti filter Anda atau <a href="{{ route('dashboard.posts.index') }}" class="text-blue-600 hover:underline">reset filter</a>.</p>
+                            </td>
                         </tr>
                         @endforelse
                     </tbody>
