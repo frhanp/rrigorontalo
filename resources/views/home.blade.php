@@ -18,9 +18,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-10">
 
             {{-- SIDEBAR KIRI (order-first untuk diletakkan di kiri pada layar besar) --}}
-            {{-- Overlay untuk mobile --}}
             <div x-show="sidebarOpen" @click="sidebarOpen = false" x-cloak class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"></div>
-            {{-- Konten Sidebar --}}
             <aside 
                 :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
                 class="fixed top-0 left-0 w-72 h-full bg-slate-50 shadow-xl z-50 transform transition-transform duration-300 ease-in-out 
@@ -32,8 +30,17 @@
                     </button>
                     <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
                         <h3 class="text-xl font-bold mb-4 text-slate-900 pb-2 border-b-2 border-slate-200">Kategori Berita</h3>
+                        
+                        {{-- === AWAL LOGIKA URUTAN BARU === --}}
+                        @php
+                            $priorityOrder = ['WARTA PAGI', 'WARTA SIANG', 'MAGOTA', 'PUASA ORANG SUSAH', 'PRO2 NEWS', 'PAS JAM', 'CEK FAKTA', 'ARUS MUDIK/BALIK'];
+                            $sortedCategories = $nav_categories->partition(fn($c) => in_array($c->name, $priorityOrder));
+                            $sortedCategories[0] = $sortedCategories[0]->sortBy(fn($c) => array_search($c->name, $priorityOrder));
+                        @endphp
+
                         <ul class="space-y-2">
-                            @foreach ($nav_categories as $category)
+                            {{-- Loop untuk kategori prioritas --}}
+                            @foreach ($sortedCategories[0] as $category)
                                 <li>
                                     <a href="{{ route('categories.show', $category) }}" class="flex justify-between items-center p-2 rounded-md font-semibold text-slate-600 hover:bg-blue-100 hover:text-blue-700 transition-colors">
                                         <span>{{ $category->name }}</span>
@@ -41,13 +48,26 @@
                                     </a>
                                 </li>
                             @endforeach
+                            
+                            {{-- Loop untuk sisa kategori (diurutkan abjad) --}}
+                            @foreach ($sortedCategories[1]->sortBy('name') as $category)
+                                <li>
+                                    <a href="{{ route('categories.show', $category) }}" class="flex justify-between items-center p-2 rounded-md font-semibold text-slate-600 hover:bg-blue-100 hover:text-blue-700 transition-colors">
+                                        <span>{{ $category->name }}</span>
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                    </a>
+                                </li>
+                            @endforeach
+
+                            {{-- Link Arsip di paling bawah --}}
                             <li class="border-t pt-2 mt-2">
                                 <a href="{{ route('posts.archive') }}" class="flex justify-between items-center p-2 rounded-md font-semibold text-slate-600 hover:bg-blue-100 hover:text-blue-700 transition-colors">
-                                    <span>Lihat Semua Arsip</span>
+                                    <span>ARSIP</span>
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                                 </a>
                             </li>
                         </ul>
+                        {{-- === AKHIR LOGIKA URUTAN BARU === --}}
                     </div>
                 </div>
             </aside>
@@ -55,19 +75,13 @@
             {{-- KONTEN UTAMA (KANAN) - Area Sambutan Statis --}}
             <div class="lg:col-span-3">
                 <div class="flex flex-col items-center justify-center text-center bg-white rounded-xl shadow-md border border-slate-200 p-10" style="min-height: 70vh;">
-                    <img src="{{ asset('images/rrilogo.svg') }}" alt="Logo RRI Gorontalo" class="w-32 h-auto mb-6">
+                    <img src="{{ asset('images/logorri.png') }}" alt="Logo RRI Gorontalo" class="w-72 h-auto mb-6">
                     <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">
                         Selamat Datang
                     </h1>
                     <p class="mt-4 max-w-2xl text-lg text-slate-600">
                         Ini adalah Portal Berita Internal RRI Gorontalo. Silakan gunakan menu kategori di samping untuk menavigasi berita atau buka arsip untuk melihat semua postingan.
                     </p>
-                    {{-- <div class="mt-8">
-                        <a href="{{ route('posts.archive') }}" 
-                           class="inline-flex items-center justify-center px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 transform hover:-translate-y-1">
-                            Buka Arsip Berita
-                        </a>
-                    </div> --}}
                 </div>
             </div>
 

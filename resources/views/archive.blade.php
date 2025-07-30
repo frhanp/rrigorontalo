@@ -3,10 +3,7 @@
         Arsip Berita - RRI Gorontalo
     </x-slot>
 
-    {{-- State untuk buka/tutup sidebar di mobile --}}
     <div x-data="{ sidebarOpen: false }">
-
-        {{-- Tombol untuk membuka sidebar di mobile --}}
         <div class="lg:hidden mb-6">
             <button @click="sidebarOpen = true" class="w-full flex items-center justify-center px-4 py-2 bg-white border border-slate-300 rounded-md font-semibold text-slate-700 shadow-sm">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -14,39 +11,29 @@
             </button>
         </div>
 
-        {{-- Layout utama dengan Grid --}}
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-10">
-
-            {{-- SIDEBAR KIRI (order-first untuk diletakkan di kiri pada layar besar) --}}
-            {{-- Overlay untuk mobile --}}
+            {{-- SIDEBAR KIRI --}}
             <div x-show="sidebarOpen" @click="sidebarOpen = false" x-cloak class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"></div>
-            {{-- Konten Sidebar --}}
-            <aside 
-                :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-                class="fixed top-0 left-0 w-72 h-full bg-slate-50 shadow-xl z-50 transform transition-transform duration-300 ease-in-out 
-                       lg:relative lg:w-auto lg:h-auto lg:translate-x-0 lg:shadow-none lg:col-span-1 lg:order-first lg:bg-transparent"
-            >
+            <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed top-0 left-0 w-72 h-full bg-slate-50 shadow-xl z-50 transform transition-transform duration-300 ease-in-out lg:relative lg:w-auto lg:h-auto lg:translate-x-0 lg:shadow-none lg:col-span-1 lg:order-first lg:bg-transparent">
                 <div class="p-4 h-full lg:sticky lg:top-10">
                     <button @click="sidebarOpen = false" class="absolute top-4 right-4 text-slate-500 hover:text-slate-800 lg:hidden">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                     <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
                         <h3 class="text-xl font-bold mb-4 text-slate-900 pb-2 border-b-2 border-slate-200">Kategori</h3>
+                        @php
+                            $priorityOrder = ['WARTA PAGI', 'WARTA SIANG', 'MAGOTA', 'PUASA ORANG SUSAH', 'PRO 2 NEWS', 'PAS JAM', 'CEK FAKTA', 'ARUS MUDIK/BALIK'];
+                            $sortedCategories = $nav_categories->partition(fn($c) => in_array($c->name, $priorityOrder));
+                            $sortedCategories[0] = $sortedCategories[0]->sortBy(fn($c) => array_search($c->name, $priorityOrder));
+                        @endphp
                         <ul class="space-y-2">
-                            @foreach ($nav_categories as $category)
-                                <li>
-                                    <a href="{{ route('categories.show', $category) }}" class="flex justify-between items-center p-2 rounded-md font-semibold text-slate-600 hover:bg-blue-100 hover:text-blue-700 transition-colors">
-                                        <span>{{ $category->name }}</span>
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                                    </a>
-                                </li>
+                            @foreach ($sortedCategories[0] as $category)
+                                <li><a href="{{ route('categories.show', $category) }}" class="flex justify-between items-center p-2 rounded-md font-semibold text-slate-600 hover:bg-blue-100 hover:text-blue-700 transition-colors"><span>{{ $category->name }}</span><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></a></li>
                             @endforeach
-                            <li class="border-t pt-2 mt-2">
-                                <a href="{{ route('posts.archive') }}" class="flex justify-between items-center p-2 rounded-md font-semibold text-blue-700 bg-blue-100">
-                                    <span>Lihat Semua Arsip</span>
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                                </a>
-                            </li>
+                            @foreach ($sortedCategories[1]->sortBy('name') as $category)
+                                <li><a href="{{ route('categories.show', $category) }}" class="flex justify-between items-center p-2 rounded-md font-semibold text-slate-600 hover:bg-blue-100 hover:text-blue-700 transition-colors"><span>{{ $category->name }}</span><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></a></li>
+                            @endforeach
+                            <li class="border-t pt-2 mt-2"><a href="{{ route('posts.archive') }}" class="flex justify-between items-center p-2 rounded-md font-semibold text-blue-700 bg-blue-100"><span>ARSIP</span><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></a></li>
                         </ul>
                     </div>
                 </div>
@@ -58,7 +45,7 @@
                 <div class="space-y-10">
                     @forelse($posts as $post)
                         <article class="group bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
-                           @if($post->media && $post->media_type == 'image')
+                            @if($post->media && $post->media_type == 'image')
                                 <div class="overflow-hidden">
                                     <a href="{{ route('posts.show', $post->slug) }}"><img src="{{ asset('storage/' . $post->media) }}" alt="{{ $post->title }}" class="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-105"></a>
                                 </div>
@@ -82,7 +69,6 @@
                     {{ $posts->links('pagination::tailwind') }}
                 </div>
             </div>
-
         </div>
     </div>
 </x-layouts.public>

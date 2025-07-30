@@ -4,7 +4,6 @@
     </x-slot>
 
     <div x-data="{ sidebarOpen: false }">
-        
         <div class="lg:hidden mb-6">
             <button @click="sidebarOpen = true" class="w-full flex items-center justify-center px-4 py-2 bg-white border border-slate-300 rounded-md font-semibold text-slate-700 shadow-sm">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -13,37 +12,28 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-10">
-
             {{-- SIDEBAR KIRI --}}
             <div x-show="sidebarOpen" @click="sidebarOpen = false" x-cloak class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"></div>
-            <aside 
-                :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-                class="fixed top-0 left-0 w-72 h-full bg-slate-50 shadow-xl z-50 transform transition-transform duration-300 ease-in-out 
-                       lg:relative lg:w-auto lg:h-auto lg:translate-x-0 lg:shadow-none lg:col-span-1 lg:order-first lg:bg-transparent"
-            >
+            <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed top-0 left-0 w-72 h-full bg-slate-50 shadow-xl z-50 transform transition-transform duration-300 ease-in-out lg:relative lg:w-auto lg:h-auto lg:translate-x-0 lg:shadow-none lg:col-span-1 lg:order-first lg:bg-transparent">
                 <div class="p-4 h-full lg:sticky lg:top-10">
                     <button @click="sidebarOpen = false" class="absolute top-4 right-4 text-slate-500 hover:text-slate-800 lg:hidden">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                     <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
                         <h3 class="text-xl font-bold mb-4 text-slate-900 pb-2 border-b-2 border-slate-200">Kategori Lain</h3>
+                        @php
+                            $priorityOrder = ['WARTA PAGI', 'WARTA SIANG', 'MAGOTA', 'PUASA ORANG SUSAH', 'PRO 2 NEWS', 'PAS JAM', 'CEK FAKTA', 'ARUS MUDIK/BALIK'];
+                            $sortedCategories = $nav_categories->partition(fn($c) => in_array($c->name, $priorityOrder));
+                            $sortedCategories[0] = $sortedCategories[0]->sortBy(fn($c) => array_search($c->name, $priorityOrder));
+                        @endphp
                         <ul class="space-y-2">
-                            @foreach ($nav_categories as $other_category)
-                                <li>
-                                    <a href="{{ route('categories.show', $other_category) }}" class="flex justify-between items-center p-2 rounded-md font-semibold {{ $category->id == $other_category->id ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }} transition-colors">
-                                        <span>{{ $other_category->name }}</span>
-                                        @if($category->id == $other_category->id)
-                                            <span class="w-2 h-2 bg-blue-600 rounded-full"></span>
-                                        @endif
-                                    </a>
-                                </li>
+                            @foreach ($sortedCategories[0] as $other_category)
+                                <li><a href="{{ route('categories.show', $other_category) }}" class="flex justify-between items-center p-2 rounded-md font-semibold {{ $category->id == $other_category->id ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }} transition-colors"><span>{{ $other_category->name }}</span>@if($category->id == $other_category->id)<span class="w-2 h-2 bg-blue-600 rounded-full"></span>@endif</a></li>
                             @endforeach
-                            <li class="border-t pt-2 mt-2">
-                                <a href="{{ route('posts.archive') }}" class="flex justify-between items-center p-2 rounded-md font-semibold text-slate-600 hover:bg-blue-100 hover:text-blue-700 transition-colors">
-                                    <span>Lihat Semua Arsip</span>
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                                </a>
-                            </li>
+                            @foreach ($sortedCategories[1]->sortBy('name') as $other_category)
+                                <li><a href="{{ route('categories.show', $other_category) }}" class="flex justify-between items-center p-2 rounded-md font-semibold {{ $category->id == $other_category->id ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }} transition-colors"><span>{{ $other_category->name }}</span>@if($category->id == $other_category->id)<span class="w-2 h-2 bg-blue-600 rounded-full"></span>@endif</a></li>
+                            @endforeach
+                            <li class="border-t pt-2 mt-2"><a href="{{ route('posts.archive') }}" class="flex justify-between items-center p-2 rounded-md font-semibold text-slate-600 hover:bg-blue-100 hover:text-blue-700 transition-colors"><span>ARSIP</span><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></a></li>
                         </ul>
                     </div>
                 </div>
@@ -80,7 +70,6 @@
                     {{ $posts->links('pagination::tailwind') }}
                 </div>
             </div>
-
         </div>
     </div>
 </x-layouts.public>

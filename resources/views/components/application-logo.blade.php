@@ -1,11 +1,13 @@
 <a href="/" class="transition-transform duration-300 hover:scale-105">
-    <div class="flex items-center space-x-3">
-        <!-- Menggunakan SVG sebagai gambar biasa -->
-        <img src="{{ asset('images/rrilogo.svg') }}" alt="Logo RRI Gorontalo" class="w-12 h-auto">
-        
-        <div>
-            <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">PORTAL BERITA</h1>
-            <p class="text-sm font-semibold text-blue-600 -mt-1">RRI GORONTALO</p>
+    {{-- Diubah menjadi susunan vertikal rata kiri --}}
+    <div class="flex flex-col items-start space-y-2">
+        <!-- Logo diperbesar -->
+        <img src="{{ asset('images/logorri.png') }}" alt="Logo RRI Gorontalo" class="w-36 h-auto">
+
+        <div class="text-left">
+            <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">RRI GORONTALO</h1>
+            <p class="text-sm font-semibold text-slate-900 leading-tight">Sekali Di Udara Tetap Di</p>
+            <p class="text-sm font-semibold text-slate-900 leading-tight">Udara</p>
         </div>
     </div>
 </a>

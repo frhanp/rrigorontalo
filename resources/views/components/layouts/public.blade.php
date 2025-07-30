@@ -75,25 +75,17 @@
     <div class="container mx-auto px-4">
         {{-- HEADER UTAMA (Tidak Berubah) --}}
         <header class="flex justify-between items-center py-6">
-            <a href="{{ route('home') }}" class="transition-transform duration-300 hover:scale-105">
-                <div class="flex items-center space-x-3">
-                    <img src="{{ asset('images/rrilogo.svg') }}" alt="Logo RRI Gorontalo" class="w-12 h-auto">
-                    <div>
-                        <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">PORTAL BERITA</h1>
-                        <p class="text-sm font-semibold text-blue-600 -mt-1">RRI GORONTALO</p>
-                    </div>
-                </div>
-            </a>
+            <x-application-logo/>
             <nav class="hidden sm:flex items-center text-sm font-medium">
                 @auth
                     <a href="{{ url('/dashboard') }}"
                         class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 shadow-sm hover:shadow-lg transition-all">Dashboard</a>
                 @else
                     <a href="{{ route('login') }}" class="text-slate-600 hover:text-blue-600 font-semibold">Masuk</a>
-                    @if (Route::has('register'))
+                    {{-- @if (Route::has('register'))
                         <a href="{{ route('register') }}"
                             class="ml-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-900 transition-colors">Daftar</a>
-                    @endif
+                    @endif --}}
                 @endauth
             </nav>
         </header>
