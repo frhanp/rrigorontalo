@@ -191,7 +191,7 @@ class PostController extends Controller
             return back()->with('error', 'Anda tidak dapat menghapus postingan yang sudah terbit.');
         }
         // Otorisasi
-        if (!in_array(Auth::user()->role, ['admin', 'editor'])) {
+        if (!in_array(Auth::user()->role, ['admin', 'editor', 'kepsta'])) {
             abort(403);
         }
 
@@ -212,7 +212,7 @@ class PostController extends Controller
     {
         // === PERUBAHAN LOGIKA HAK AKSES ===
         // Sekarang, semua user dengan role 'admin' ATAU 'editor' bisa mengekspor.
-        if (!in_array(Auth::user()->role, ['admin', 'editor'])) {
+        if (!in_array(Auth::user()->role, ['admin', 'editor', 'kepsta'])) {
             abort(403, 'ANDA TIDAK MEMILIKI HAK AKSES UNTUK MELAKUKAN INI.');
         }
 

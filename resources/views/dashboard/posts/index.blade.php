@@ -10,46 +10,12 @@
 
             {{-- === AWAL FORM FILTER DINAMIS === --}}
             <div class="mb-6 pb-6 border-b border-slate-200">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-lg font-medium text-slate-800">Filter Berita</h3>
-                    <a href="{{ route('dashboard.posts.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700">
-                        Tambah Postingan Baru
-                    </a>
+                <div class="flex justify-end items-center">
+                     <a href="{{ route('dashboard.posts.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700">
+                          Tambah Postingan Baru
+                     </a>
                 </div>
-                <p class="text-sm text-slate-500 mt-1">Hasil akan diperbarui secara otomatis saat Anda mengubah filter.</p>
-                
-                <form id="filter-form" method="GET" action="{{ route('dashboard.posts.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 items-end">
-                    {{-- Filter Penulis --}}
-                    <div class="w-full">
-                        <x-input-label for="author" :value="__('Penulis')" />
-                        <select name="author" id="author" onchange="this.form.submit()" class="block w-full mt-1 border-slate-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm">
-                            <option value="">Semua Penulis</option>
-                            @foreach ($authors as $author)
-                                <option value="{{ $author->id }}" {{ $selectedAuthor == $author->id ? 'selected' : '' }}>
-                                    {{ $author->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    
-                    {{-- Filter Tanggal Mulai --}}
-                    <div class="w-full">
-                        <x-input-label for="start_date" :value="__('Dari Tanggal')" />
-                        <x-text-input type="date" name="start_date" id="start_date" :value="$startDate" onchange="this.form.submit()" class="block w-full mt-1" />
-                    </div>
-
-                    {{-- Filter Tanggal Akhir --}}
-                    <div class="w-full">
-                        <x-input-label for="end_date" :value="__('Sampai Tanggal')" />
-                        <x-text-input type="date" name="end_date" id="end_date" :value="$endDate" onchange="this.form.submit()" class="block w-full mt-1" />
-                    </div>
-
-                    {{-- Tombol Reset --}}
-                    <div class="flex items-center">
-                        <a href="{{ route('dashboard.posts.index') }}" class="w-full inline-flex items-center justify-center px-4 py-2 bg-white border border-slate-300 rounded-md font-semibold text-xs text-slate-700 uppercase tracking-widest shadow-sm hover:bg-slate-50">Reset Filter</a>
-                    </div>
-                </form>
-            </div>
+           </div>
             {{-- === AKHIR FORM FILTER DINAMIS === --}}
 
             @if (session('success'))
