@@ -118,18 +118,8 @@
                     </div>
                 </div>
             </a>
-
-            {{-- === KARTU STATISTIK BARU: BERITA ANDA === --}}
-            <a href="{{ route('dashboard.posts.index', ['author' => Auth::id()]) }}" class="group block">
-                <div
-                    class="bg-white p-6 rounded-lg shadow-sm flex items-start justify-between border border-transparent transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 hover:border-teal-300">
-                    <div>
-                        <p class="text-sm font-medium text-slate-500 uppercase tracking-wider">Berita Anda</p>
-                        <p class="text-3xl font-bold text-teal-600 mt-1">{{ $userPostCount }}</p>
-                    </div>
                     <div
-                        class="bg-teal-100 text-teal-600 p-3 rounded-full transition-colors duration-300 group-hover:bg-teal-600 group-hover:text-white">
-                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                       
                             stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
@@ -213,6 +203,93 @@
                 </div>
             </div>
         </div>
+
+        <div class="container mt-5">
+ <h2 class="mb-4 text-base font-semibold text-slate-800">Filter Bulan & Tahun Untuk Melihat Rekapan Berita </h2>
+
+<form method="GET" action="" class="flex flex-wrap items-end gap-2 md:gap-3 mb-6">
+    <div>
+        <label for="month" class="block mb-1 text-xs font-medium text-slate-700">Bulan</label>
+        <select name="month" id="month" class="block w-28 border border-gray-300 rounded-md shadow-sm text-sm py-1 px-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+            @foreach (range(1, 12) as $m)
+                <option value="{{ $m }}" {{ request('month') == $m ? 'selected' : '' }}>
+                    {{ \Carbon\Carbon::create()->month($m)->format('F') }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+    <div>
+        <label for="year" class="block mb-1 text-xs font-medium text-slate-700">Tahun</label>
+        <select name="year" id="year" class="block w-24 border border-gray-300 rounded-md shadow-sm text-sm py-1 px-2 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+            @foreach (range(date('Y') - 3, date('Y')) as $y)
+                <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>
+                    {{ $y }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+    <button type="submit" class="px-3 py-1 bg-blue-600 text-white text-sm rounded-md shadow hover:bg-blue-700 transition">
+        Filter
+    </button>
+</form>
+
+{{-- ========================== --}}
+{{-- Warta Pagi --}}
+<h2 class="mb-4 text-base font-semibold text-slate-800">Rekap Jumlah Berita Warta Pagi per Reporter</h2>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    @php
+        $reporters_pagi = [
+            'Diandra' => $report_pagi->jumlah_diandra,
+            'Budi Akantu' => $report_pagi->jumlah_budi_akantu,
+            'Fery Apantu' => $report_pagi->jumlah_fery_apantu,
+            'Hendra Rauf' => $report_pagi->jumlah_hendra_rauf,
+            'Andi Sanga' => $report_pagi->jumlah_andi_sanga,
+            'Bobi Irawan' => $report_pagi->jumlah_bobi_irawan,
+            'Taufik Usman' => $report_pagi->jumlah_taufik_usman,
+            'Rusdi Aneta' => $report_pagi->jumlah_rusdi_aneta,
+        ];
+    @endphp
+
+    @foreach ($reporters_pagi as $name => $jumlah)
+        <div class="bg-white p-4 rounded-xl shadow hover:shadow-md transition">
+            <h3 class="text-xs font-medium text-slate-600">{{ $name }}</h3>
+            <p class="text-xl font-bold text-slate-900 mt-1">{{ $jumlah }}</p>
+        </div>
+    @endforeach
+</div>
+
+{{-- ========================== --}}
+{{-- Warta Siang --}}
+<h2 class="mt-8 mb-4 text-base font-semibold text-slate-800">Rekap Jumlah Berita Warta Siang per Reporter</h2>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    @php
+        $reporters_siang = [
+            'Diandra' => $report_siang->jumlah_diandra,
+            'Budi Akantu' => $report_siang->jumlah_budi_akantu,
+            'Fery Apantu' => $report_siang->jumlah_fery_apantu,
+            'Hendra Rauf' => $report_siang->jumlah_hendra_rauf,
+            'Andi Sanga' => $report_siang->jumlah_andi_sanga,
+            'Bobi Irawan' => $report_siang->jumlah_bobi_irawan,
+            'Taufik Usman' => $report_siang->jumlah_taufik_usman,
+            'Rusdi Aneta' => $report_siang->jumlah_rusdi_aneta,
+        ];
+    @endphp
+
+    @foreach ($reporters_siang as $name => $jumlah)
+        <div class="bg-white p-4 rounded-xl shadow hover:shadow-md transition">
+            <h3 class="text-xs font-medium text-slate-600">{{ $name }}</h3>
+            <p class="text-xl font-bold text-slate-900 mt-1">{{ $jumlah }}</p>
+        </div>
+    @endforeach
+</div>
+ 
+<!-- Card total berita -->
+
+</div>
+
+</div>
 
     </div>
 </x-app-layout>

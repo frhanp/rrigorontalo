@@ -42,48 +42,50 @@ Route::middleware('auth')->group(function () {
 });
 
 
+
+
 /*
 |--------------------------------------------------------------------------
-| Rute Dashboard & Panel Kontrol
+| Rute Panel Kontrol (Dashboard dan Admin)
 |--------------------------------------------------------------------------
 */
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])->name('dashboard');
+Route::middleware(['auth', 'verified'])->group(function () {
 
-// Rute untuk Admin dan Editor
-Route::middleware(['auth', 'verified', 'role:admin,editor'])->prefix('dashboard')->name('dashboard.')->group(function () {
-    Route::post('/upload-media', [PostController::class, 'upload'])->name('posts.upload');
-    // Kelola Berita
-    Route::get('/posts/{post}/export-pdf', [PostController::class, 'exportPdf'])->name('posts.exportPdf');
-    Route::resource('posts', PostController::class);
+    // --- Rute yang bisa diakses oleh KEPSTA, EDITOR, & ADMIN ---
+    Route::middleware('role:admin,editor,kepsta')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Kelola Komentar
-    Route::get('/comments', [CommentController::class, 'index'])->name('comments.index');
-    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+        // Grup untuk Laporan PDF
+        Route::prefix('dashboard')->name('dashboard.')->group(function () {
+            Route::get('/pdf-manager', [PdfController::class, 'index'])->name('pdf.index');
+            Route::get('/pdf-manager/recap', [PdfController::class, 'recap'])->name('pdf.recap');
+        });
+    });
 
-    // Kelola Media
-    Route::get('/media', [MediaController::class, 'index'])->name('media.index');
-    Route::delete('/media', [MediaController::class, 'destroy'])->name('media.destroy');
+    // --- Rute yang bisa diakses oleh EDITOR & ADMIN ---
+    Route::middleware('role:admin,editor,kepsta')->prefix('dashboard')->name('dashboard.')->group(function () {
+        Route::post('/upload-media', [PostController::class, 'upload'])->name('posts.upload');
+        Route::get('/posts/{post}/export-pdf', [PostController::class, 'exportPdf'])->name('posts.exportPdf');
+        Route::resource('posts', PostController::class);
 
-    // Kelola PDF
-    Route::get('/pdf-manager', [PdfController::class, 'index'])->name('pdf.index');
-    Route::get('/pdf-manager/recap', [PdfController::class, 'recap'])->name('pdf.recap'); // <-- TAMBAHKAN INI
+        Route::get('/comments', [CommentController::class, 'index'])->name('comments.index');
+        Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
-    
-    
+        Route::get('/media', [MediaController::class, 'index'])->name('media.index');
+        Route::delete('/media', [MediaController::class, 'destroy'])->name('media.destroy');
+    });
+
+    // --- Rute yang HANYA bisa diakses oleh ADMIN ---
+    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::post('/categories/update-order', [CategoryController::class, 'updateOrder'])->name('categories.updateOrder');
+        Route::resource('categories', CategoryController::class);
+        Route::resource('users', UserController::class);
+    });
 });
-
-// Rute Khusus Admin
-Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    // Hanya Kelola User (Hak Akses) yang tersisa di sini
-    Route::resource('users', UserController::class);
-    Route::resource('categories', CategoryController::class);
-});
-
 
 /*
 |--------------------------------------------------------------------------
-| Rute Autentikasi Bawaan Laravel Breeze
+| Rute Autentikasi Bawaan
 |--------------------------------------------------------------------------
 */
 require __DIR__ . '/auth.php';

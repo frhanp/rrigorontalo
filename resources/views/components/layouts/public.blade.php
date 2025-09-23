@@ -104,7 +104,7 @@
                 <h3 class="text-xl font-bold text-slate-800 mb-2">Ikuti Kami di Media Sosial</h3>
                 <p class="text-slate-500 mb-6">Dapatkan informasi terbaru langsung dari RRI Gorontalo.</p>
                 <div class="flex justify-center items-center space-x-4">
-                    <a href="https://www.youtube.com/@RRIGORONTALOSTREAMING" target="_blank"
+                    <a href="https://www.youtube.com/@rrigorontalo5755" target="_blank"
                         class="group inline-flex items-center justify-center px-5 py-3 bg-white border-2 border-slate-300 rounded-lg font-semibold text-slate-700 hover:border-red-500 hover:bg-red-500 hover:text-white transition-all duration-300 transform hover:-translate-y-1 shadow-sm hover:shadow-lg">
                         <svg class="w-5 h-5 mr-2 transition-colors group-hover:text-white" fill="currentColor"
                             viewBox="0 0 24 24">
@@ -114,7 +114,7 @@
                         </svg>
                         <span>YouTube</span>
                     </a>
-                    <a href="https://www.facebook.com/rri.gorontalo.5" target="_blank"
+                    <a href="https://www.facebook.com/rri.gorontalo/" target="_blank"
                         class="group inline-flex items-center justify-center px-5 py-3 bg-white border-2 border-slate-300 rounded-lg font-semibold text-slate-700 hover:border-blue-700 hover:bg-blue-700 hover:text-white transition-all duration-300 transform hover:-translate-y-1 shadow-sm hover:shadow-lg">
                         <svg class="w-5 h-5 mr-2 transition-colors group-hover:text-white" fill="currentColor"
                             viewBox="0 0 24 24">

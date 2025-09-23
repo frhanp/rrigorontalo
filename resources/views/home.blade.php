@@ -80,7 +80,7 @@
                         Selamat Datang
                     </h1>
                     <p class="mt-4 max-w-2xl text-lg text-slate-600">
-                        Ini adalah Portal Berita Internal RRI Gorontalo. Silakan gunakan menu kategori di samping untuk menavigasi berita atau buka arsip untuk melihat semua postingan.
+                        Ini adalah Berita RRI Gorontalo. Silakan gunakan menu kategori di samping untuk menavigasi berita atau buka arsip untuk melihat semua postingan.
                     </p>
                 </div>
             </div>

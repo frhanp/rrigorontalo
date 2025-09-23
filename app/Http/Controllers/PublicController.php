@@ -55,14 +55,15 @@ class PublicController extends Controller
      */
     public function showByCategory(Category $category)
     {
-        $posts = $category->posts()
-                          ->where('status', 'published')
-                          ->where(function ($query) {
-                              $query->where('published_at', '<=', now())
-                                    ->orWhereNull('published_at');
-                          })
-                          ->latest('published_at')
-                          ->paginate(5);
+     $posts = $category->posts()
+    ->where('status', 'published')
+    ->where(function ($query) {
+        $query->where('published_at', '<=', now())
+              ->orWhereNull('published_at')
+              ->orWhereDate('published_at', '=', now()->addDay()->toDateString());
+    })
+    ->latest('published_at')
+    ->paginate(5);
 
         // Halaman kategori juga butuh data kategori lain untuk sidebarnya.
         $nav_categories = Category::orderBy('name')->get();
