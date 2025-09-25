@@ -40,7 +40,7 @@
 
     <div class="cover-page">
         <h1>REKAPITULASI BERITA</h1>
-        <h2>PORTAL INTERNAL RRI GORONTALO</h2>
+        <h2>RRI GORONTALO</h2>
         <p>
             <strong>Filter Penulis:</strong> {{ $authorName }}<br>
             <strong>Filter Kategori:</strong> {{ $categoryName }}<br>

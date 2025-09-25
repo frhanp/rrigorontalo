@@ -26,6 +26,7 @@
                             <select name="role" id="role" class="block mt-1 w-full border-gray-300 rounded-md shadow-sm">
                                 <option value="editor" @if(old('role', $user->role) == 'editor') selected @endif>Editor</option>
                                 <option value="admin" @if(old('role', $user->role) == 'admin') selected @endif>Admin</option>
+                                <option value="kepsta" @if(old('role', $user->role) == 'kepsta') selected @endif>Kepsta</option>
                             </select>
                         </div>
                         <!-- Password (opsional) -->

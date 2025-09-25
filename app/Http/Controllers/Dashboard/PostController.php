@@ -122,10 +122,10 @@ class PostController extends Controller
     public function edit(Post $post)
     {
         // === PERUBAHAN DI SINI ===
-        if (Auth::user()->role === 'editor' && $post->status === 'published') {
-            // Ganti abort(403) dengan redirect dan pesan error
-            return back()->with('error', 'Anda tidak dapat mengedit postingan yang sudah terbit.');
-        }
+        // if (Auth::user()->role === 'editor' && $post->status === 'published') {
+        //     // Ganti abort(403) dengan redirect dan pesan error
+        //     return back()->with('error', 'Anda tidak dapat mengedit postingan yang sudah terbit.');
+        // }
 
         $categories = Category::orderBy('name')->get();
         $post->load('comments.user');
@@ -191,7 +191,7 @@ class PostController extends Controller
             return back()->with('error', 'Anda tidak dapat menghapus postingan yang sudah terbit.');
         }
         // Otorisasi
-        if (!in_array(Auth::user()->role, ['admin', 'editor'])) {
+        if (!in_array(Auth::user()->role, ['admin', 'editor', 'kepsta'])) {
             abort(403);
         }
 
@@ -212,7 +212,7 @@ class PostController extends Controller
     {
         // === PERUBAHAN LOGIKA HAK AKSES ===
         // Sekarang, semua user dengan role 'admin' ATAU 'editor' bisa mengekspor.
-        if (!in_array(Auth::user()->role, ['admin', 'editor'])) {
+        if (!in_array(Auth::user()->role, ['admin', 'editor', 'kepsta'])) {
             abort(403, 'ANDA TIDAK MEMILIKI HAK AKSES UNTUK MELAKUKAN INI.');
         }
 
